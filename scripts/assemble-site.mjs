@@ -45,5 +45,6 @@ copyDir(HOME_DIR, SITE_DIR)
 copyDir(WIKI_OUT, path.join(SITE_DIR, 'essentialsy'))
 
 fs.writeFileSync(path.join(SITE_DIR, 'CNAME'), `${CNAME}\n`)
+fs.writeFileSync(path.join(SITE_DIR, '.nojekyll'), '')
 
 console.log(`[assemble-site] Ready at ${SITE_DIR}`)
