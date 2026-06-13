@@ -1,0 +1,7 @@
+website/
+_site/
+node_modules/
+wiki/.vitepress/cache/
+.env
+.env.local
+.env.*.local

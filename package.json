@@ -1,0 +1,17 @@
+{
+  "name": "sushii-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev wiki",
+    "dev:home": "npx --yes serve home -l 5174",
+    "build": "vitepress build wiki",
+    "build:site": "npm run build && node scripts/assemble-site.mjs",
+    "preview": "vitepress preview website",
+    "preview:site": "npm run build:site && npx --yes serve _site -l 4173",
+    "algolia-export": "node scripts/generate-algolia-records.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^2.0.0-alpha.17"
+  }
+}
