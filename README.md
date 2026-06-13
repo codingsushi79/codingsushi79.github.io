@@ -1,4 +1,4 @@
-# SushiMC Documentation Hub
+# SushiMC Documentation
 
 Static documentation portal at **https://docs.sushii.dev/** with project docs under subpaths (e.g. `/essentialsy/`).
 
