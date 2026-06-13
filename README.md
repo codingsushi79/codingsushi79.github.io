@@ -6,7 +6,6 @@ Static documentation portal at **https://docs.sushii.dev/** with project docs un
 
 ```bash
 npm install
-cp .env.example .env.local   # optional — Algolia search in EssentialsY docs
 ```
 
 | Command | Description |
@@ -23,8 +22,7 @@ docs-site/
 ├── home/                 # Main landing page (docs.sushii.dev/)
 ├── wiki/                 # EssentialsY VitePress docs → /essentialsy/
 ├── scripts/
-│   ├── assemble-site.mjs # Combines home + wiki build for deploy
-│   └── generate-algolia-records.mjs
+│   └── assemble-site.mjs # Combines home + wiki build for deploy
 ├── website/              # VitePress build output (gitignored)
 ├── _site/                # Full site output (gitignored)
 └── .github/workflows/    # GitHub Pages deploy
@@ -41,9 +39,3 @@ docs-site/
 1. Use this folder as the repo root.
 2. **Settings → Pages → Source:** GitHub Actions
 3. Custom domain: `docs.sushii.dev`
-4. Secrets for Algolia (EssentialsY search): `ALGOLIA_APP_ID`, `ALGOLIA_API_KEY`, `ALGOLIA_INDEX_NAME`
-
-## Search (Algolia — EssentialsY only)
-
-1. Crawl **https://docs.sushii.dev/essentialsy/** via https://crawler.algolia.com/ using `wiki/.vitepress/algolia-crawler-config.js`
-2. Or upload `wiki/algolia-records.json` — regenerate with `npm run algolia-export`

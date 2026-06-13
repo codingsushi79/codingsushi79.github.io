@@ -1,10 +1,5 @@
 import { defineConfig } from 'vitepress'
 
-const algoliaAppId = process.env.ALGOLIA_APP_ID
-const algoliaApiKey = process.env.ALGOLIA_API_KEY
-const algoliaIndexName = process.env.ALGOLIA_INDEX_NAME
-const useAlgolia = Boolean(algoliaAppId && algoliaApiKey && algoliaIndexName)
-
 const docsBase = '/essentialsy/'
 
 export default defineConfig({
@@ -112,18 +107,9 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/codingsushi79/EssentialsY' },
     ],
 
-    search: useAlgolia
-      ? {
-          provider: 'algolia',
-          options: {
-            appId: algoliaAppId!,
-            apiKey: algoliaApiKey!,
-            indexName: algoliaIndexName!,
-          },
-        }
-      : {
-          provider: 'local',
-        },
+    search: {
+      provider: 'local',
+    },
 
     outline: {
       level: [2, 3],

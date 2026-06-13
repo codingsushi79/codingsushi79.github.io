@@ -8,8 +8,7 @@
     "build": "vitepress build wiki",
     "build:site": "npm run build && node scripts/assemble-site.mjs",
     "preview": "vitepress preview website",
-    "preview:site": "npm run build:site && npx --yes serve _site -l 4173",
-    "algolia-export": "node scripts/generate-algolia-records.mjs"
+    "preview:site": "npm run build:site && npx --yes serve _site -l 4173"
   },
   "devDependencies": {
     "vitepress": "^2.0.0-alpha.17"
