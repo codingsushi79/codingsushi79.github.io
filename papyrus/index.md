@@ -22,7 +22,7 @@ features:
     details: Switch entity random source between fast SHARED mode and vanilla VANILLA mode.
   - icon: ⚡
     title: Performance Defaults
-    details: Tuned chunk I/O, hopper, explosion, and idle-world defaults out of the box.
+    details: Tuned chunk I/O, hopper, explosion, XP orb, and JVM/Netty defaults out of the box.
   - icon: 🔴
     title: Redstone Presets
     details: Vanilla, EigenCraft, or Alternate Current engines with documented presets.
@@ -41,7 +41,7 @@ Papyrus is a Minecraft server software fork of [Paper](https://github.com/PaperM
 
 ## Learn More
 
-- [Papyrus Options](/configuration/papyrus-options) — Entity RNG, redstone, chunk I/O
+- [Papyrus Options](/configuration/papyrus-options) — Entity RNG, XP orbs, redstone, chunk I/O
 - [API Overview](/api/overview) — Plugin development and Javadoc
 - [Production](/running/production) — JVM flags and start script
 - [FAQ](/faq) — Common questions

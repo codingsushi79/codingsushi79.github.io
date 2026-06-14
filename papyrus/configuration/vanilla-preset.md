@@ -12,7 +12,7 @@ performance:
 # config/paper-world-defaults.yml
 misc:
   redstone-implementation: VANILLA
-  update-pathfinding-on-block-update: true
+  update-pathfinding-on-block-update: true   # restore Paper-like mob repathing
 environment:
   optimize-explosions: false
 entities:

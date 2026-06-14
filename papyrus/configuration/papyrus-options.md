@@ -9,6 +9,8 @@ Fork-specific settings beyond standard Paper configuration.
 ```yaml
 performance:
   entity-random-source: SHARED   # or VANILLA
+  apply-runtime-jvm-defaults: true # Netty buffer caps, JNA nosys
+  netty-threads: -1                # -1 = auto (4–8 based on CPU)
 ```
 
 | Value | Behavior | Use when |
@@ -17,6 +19,33 @@ performance:
 | `VANILLA` | Each entity gets `RandomSource.create()` like vanilla | Speedrunners, enchantment seed manipulation, or vanilla-like RNG |
 
 Paper's shared RNG breaks predictability that vanilla players rely on for enchantment table seed cycling.
+
+### JVM and Netty defaults
+
+| Key | Default | Effect |
+|-----|---------|--------|
+| `apply-runtime-jvm-defaults` | `true` | Sets Netty buffer caps and `jna.nosys` at startup |
+| `netty-threads` | `-1` (auto) | Scales Netty event-loop threads (4–8) when not set in `spigot.yml` |
+
+`performance.netty-threads` sets `io.netty.eventLoopThreads` when `spigot.yml` does not override Netty thread count. Set either one, not both, unless you need different values.
+
+## Experience orbs
+
+**File:** `config/paper-world-defaults.yml` or `<world>/paper-world.yml`
+
+```yaml
+environment:
+  experience-orb-despawn-rate: 6000   # ticks (vanilla: 6000)
+  experience-orb-pickup-radius: 8.0   # blocks (vanilla: 8)
+
+entities:
+  spawning:
+    experience-orb-merge-radius: 1.0    # merge search radius in blocks
+  behavior:
+    disable-experience-orb-merge: false
+```
+
+Lower `experience-orb-pickup-radius` to reduce orb lag on grinder servers. Set `disable-experience-orb-merge: true` if you want orbs to stay separate.
 
 ## Redstone implementation
 

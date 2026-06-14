@@ -2,7 +2,7 @@
 
 ## 1. Download the jar
 
-Use the [Download](/download) page to grab a **Stable** release or the latest **Dev** CI build.
+Use the [Download](/download) page to grab a **Stable** release (`Papyrus-26.1.2.jar`) or the latest **Dev** CI build (`papyrus-server` artifact → `papyrus-paperclip-*.jar`).
 
 Or build from source:
 

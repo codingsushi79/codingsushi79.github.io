@@ -13,7 +13,7 @@ Papyrus uses Paper's layered config system. Files are YAML; keys use kebab-case.
 
 After editing configs, restart the server or use `/paper reload` where supported (some settings require a full restart).
 
-For the full Paper config reference, see [docs.papermc.io](https://docs.papermc.io/paper/reference/global-configuration). The sections below cover **Papyrus-specific** behavior and recommended values.
+For the full Paper config reference, see [docs.papermc.io](https://docs.papermc.io/paper/reference/configuration). The sections below cover **Papyrus-specific** behavior and recommended values.
 
 ## Related
 

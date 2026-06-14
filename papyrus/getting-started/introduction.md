@@ -10,7 +10,8 @@ Paper optimizes Minecraft in ways that sometimes diverge from vanilla behavior. 
 |------|----------------|----------------|
 | Entity RNG | Shared random source across all entities (faster) | Configurable: `SHARED` or `VANILLA` per-entity RNG |
 | Redstone | Vanilla by default; optional fast engines | Same engines, documented presets for vanilla vs tech servers |
-| Performance defaults | Paper defaults | Tuned defaults for chunk I/O, explosions, hoppers, idle worlds, and more |
+| Experience orbs | Paper defaults | Configurable despawn, pickup radius, merge radius, and merge disable |
+| Performance defaults | Paper defaults | Tuned defaults for chunk I/O, explosions, hoppers, idle worlds, JVM/Netty |
 | Branding | Paper / PaperMC | **Papyrus by SushiMC** |
 | Update checker | Checks PaperMC | Disabled by default (fork-specific builds) |
 

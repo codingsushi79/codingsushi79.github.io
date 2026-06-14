@@ -9,7 +9,9 @@ Papyrus identifies itself as **Papyrus by SushiMC** at runtime while remaining A
 | Display name | Paper | Papyrus |
 | Brand ID | `papermc:paper` | `sushimc:papyrus` |
 | Maven group | `io.papermc.paper` | `io.papermc.paper` (unchanged) |
-| Jar name | `paperclip-*.jar` | `Papyrus-*.jar` (releases) |
+| Gradle modules | `:paper-api`, `:paper-server` | Same names; dirs are `papyrus-*` |
+| Release jar | `paper-*.jar` | `Papyrus-<mcVersion>.jar` |
+| CI / local jar | `paperclip-*.jar` | `papyrus-paperclip-*.jar` |
 
 Startup message:
 
@@ -26,14 +28,14 @@ import io.papermc.paper.ServerBuildInfo;
 
 ServerBuildInfo info = ServerBuildInfo.buildInfo();
 
-// Preferred — works on Paper and Papyrus
-if (info.isBrandCompatible("papermc:paper")) {
-    // Paper-compatible server
+if (info.brandId().equals(ServerBuildInfo.BRAND_PAPYRUS_ID)) {
+    // Papyrus-specific logic (sushimc:papyrus)
 }
 
-// Raw brand (avoid when possible)
-info.brandId();   // "sushimc:papyrus" on Papyrus
-info.brandName(); // "Papyrus"
+// Preferred for Paper-targeted plugins — works on Paper and Papyrus
+if (info.isBrandCompatible(ServerBuildInfo.BRAND_PAPER_ID)) {
+    // Paper-compatible server
+}
 ```
 
 Plugins that call `isBrandCompatible("papermc:paper")` are supported on Papyrus.
@@ -42,10 +44,10 @@ Plugins that call `isBrandCompatible("papermc:paper")` are supported on Papyrus.
 
 Papyrus disables the PaperMC update checker by default (`update-checker.enabled: false` in new configs). Fork builds are distributed via [GitHub Releases](/download) and CI.
 
-## FAQ
+## Versioning
 
-**Will my Paper plugin work?**  
-Yes — same API package, same Maven artifact, same config files, same `paper-plugin.yml` format.
-
-**Why is the release jar named `Papyrus-26.1.2.jar`?**  
-GitHub releases ship a branded jar named after the Minecraft version (e.g. `Papyrus-26.1.2.jar`). CI artifacts and local Gradle builds still use the internal `papyrus-paperclip-*.jar` filename from upstream Paper's bootstrap tool.
+| Scheme | Example | Used for |
+|--------|---------|----------|
+| Minecraft / API | `26.1.2` | Jar filename, `api-version` in plugins |
+| Release tag | `v1.0.1` | GitHub Releases semver |
+| CI build | `26.1.2.build.<N>-stable` | Internal build strings |

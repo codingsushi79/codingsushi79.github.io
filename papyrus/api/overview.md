@@ -20,6 +20,8 @@ java {
 
 Check `apiVersion` in the [Papyrus `gradle.properties`](https://github.com/codingsushi79/Papyrus/blob/main/gradle.properties) for the current API version string to use in `paper-plugin.yml`.
 
+Papyrus does not publish its own Maven repository — use Paper's `repo.papermc.io`. The API matches Paper's published `paper-api` artifact.
+
 ## Javadoc
 
 The full API reference is identical to Paper's public API:
@@ -44,6 +46,7 @@ See [Packages](/api/packages) for a detailed breakdown.
 ## Compatibility notes
 
 - Plugins checking `ServerBuildInfo.brandId()` for `papermc:paper` still work via `isBrandCompatible()`
+- Use `ServerBuildInfo.BRAND_PAPYRUS_ID` for Papyrus-specific behavior
 - Papyrus reports brand ID `sushimc:papyrus`
 - Avoid hard-coded brand string checks when possible
 

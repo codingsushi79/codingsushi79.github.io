@@ -9,7 +9,9 @@ pageClass: download-page
 
 ### Stable releases
 
-When a release is published, download `Papyrus-26.1.2.jar` (or `Papyrus-*.jar` for other Minecraft versions) from the [Releases](https://github.com/codingsushi79/Papyrus/releases) page.
+Download `Papyrus-26.1.2.jar` from the [Releases](https://github.com/codingsushi79/Papyrus/releases) page.
+
+Release tags use semantic fork versioning (`v1.0.0`, `v1.0.1`, …). The jar filename always reflects the Minecraft version (`Papyrus-<mcVersion>.jar`), not the release tag.
 
 ### Dev builds (CI)
 

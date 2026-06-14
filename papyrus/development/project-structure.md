@@ -2,26 +2,29 @@
 
 ```text
 Papyrus/
-├── papyrus-api/          Public Bukkit/Paper plugin API (published as paper-api)
-├── papyrus-server/       Server implementation
+├── papyrus-api/          Public Bukkit/Paper plugin API (Gradle project :paper-api)
+├── papyrus-server/       Server implementation (Gradle project :paper-server)
+├── paper-server/         Symlink → papyrus-server (required by Paperweight patch tooling)
 │   ├── patches/          Minecraft source patches (sources/, features/, resources/)
 │   └── src/main/java/    Papyrus/Paper Java code (io.papermc.paper.*)
-├── papyrus-generator/    Code generation utilities
+├── papyrus-generator/    Optional code generation utilities
 ├── build-data/           Access wideners and mapping data
 ├── scripts/
 │   └── start.sh          Production JVM start script
-├── gradle.properties     MC version, Maven group, Gradle tuning
-└── .github/workflows/    CI build and test publishing
+├── gradle.properties     MC version, apiVersion, Maven group
+└── .github/workflows/    CI build, tests, and release uploads
 ```
 
-Maven coordinates remain `io.papermc.paper` for plugin compatibility. The display brand is **Papyrus** (`sushimc:papyrus`).
+Gradle project names stay `:paper-api` and `:paper-server` so upstream Paperweight and plugin examples keep working. Physical directories use the `papyrus-*` prefix.
+
+Maven coordinates remain `io.papermc.paper:paper-api` for plugin compatibility. The API jar embeds `apiVersioning.json` (from `apiVersion` in `gradle.properties`) for runtime version checks. The display brand is **Papyrus** (`sushimc:papyrus`).
 
 ## Key files
 
 | File | Purpose |
 |------|---------|
 | `gradle.properties` | `mcVersion`, `apiVersion`, `group`, `channel` |
-| `build.gradle.kts` | Root build configuration |
+| `build.gradle.kts` | Root build configuration (Java 25 toolchain) |
 | `papyrus-server/build.gradle.kts` | Server module build |
 | `papyrus-api/build.gradle.kts` | API module build and publishing |
 
