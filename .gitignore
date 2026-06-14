@@ -1,7 +1,9 @@
 website/
+website-discordlinkplus/
 _site/
 node_modules/
 wiki/.vitepress/cache/
+discordlinkplus/.vitepress/cache/
 .env
 .env.local
 .env.*.local

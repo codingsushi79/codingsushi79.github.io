@@ -10,7 +10,10 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const HOME_DIR = path.join(ROOT, 'home')
-const WIKI_OUT = path.join(ROOT, 'website')
+const PROJECTS = [
+  { name: 'essentialsy', outDir: path.join(ROOT, 'website') },
+  { name: 'discordlinkplus', outDir: path.join(ROOT, 'website-discordlinkplus') },
+]
 const SITE_DIR = path.join(ROOT, '_site')
 const CNAME = 'docs.sushii.dev'
 
@@ -33,16 +36,20 @@ function rmDir(dir) {
   }
 }
 
-if (!fs.existsSync(WIKI_OUT)) {
-  console.error('[assemble-site] Run `npm run build` first (missing website/).')
-  process.exit(1)
+for (const project of PROJECTS) {
+  if (!fs.existsSync(project.outDir)) {
+    console.error(`[assemble-site] Missing ${project.outDir} — run \`npm run build\` first.`)
+    process.exit(1)
+  }
 }
 
 rmDir(SITE_DIR)
 fs.mkdirSync(SITE_DIR, { recursive: true })
 
 copyDir(HOME_DIR, SITE_DIR)
-copyDir(WIKI_OUT, path.join(SITE_DIR, 'essentialsy'))
+for (const project of PROJECTS) {
+  copyDir(project.outDir, path.join(SITE_DIR, project.name))
+}
 
 fs.writeFileSync(path.join(SITE_DIR, 'CNAME'), `${CNAME}\n`)
 fs.writeFileSync(path.join(SITE_DIR, '.nojekyll'), '')
