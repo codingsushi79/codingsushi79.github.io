@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-type Channel = 'stable' | 'dev'
 type Release = {
   tag_name: string
   name: string
@@ -15,16 +14,19 @@ type WorkflowRun = {
   head_branch: string
   created_at: string
   conclusion: string
+  run_number: number
 }
 
 const REPO = 'codingsushi79/Papyrus'
 const WORKFLOW_FILE = 'build.yml'
-const ARTIFACT_NAME = 'papyrus-server'
+const DEFAULT_MC_VERSION = '26.1.2'
 
-const channel = ref<Channel>('stable')
 const releases = ref<Release[]>([])
 const devRuns = ref<WorkflowRun[]>([])
 const selectedTag = ref('')
+const selectedDevId = ref('')
+const showDev = ref(false)
+const menuOpen = ref(false)
 const loading = ref(true)
 const error = ref('')
 
@@ -35,7 +37,7 @@ async function loadData() {
   try {
     const [releaseRes, runsRes] = await Promise.all([
       fetch(`https://api.github.com/repos/${REPO}/releases?per_page=20`),
-      fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs?branch=main&status=success&per_page=10`),
+      fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs?branch=main&status=success&per_page=15`),
     ])
 
     if (!releaseRes.ok) throw new Error('Failed to load releases')
@@ -52,7 +54,18 @@ async function loadData() {
   }
 }
 
-onMounted(loadData)
+onMounted(() => {
+  loadData()
+  document.addEventListener('click', closeMenuOnOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeMenuOnOutside)
+})
+
+function closeMenuOnOutside() {
+  menuOpen.value = false
+}
 
 const stableReleases = computed(() =>
   releases.value.filter((release) => !release.prerelease && release.assets.length > 0),
@@ -60,9 +73,15 @@ const stableReleases = computed(() =>
 
 const devBuilds = computed(() => devRuns.value.filter((run) => run.conclusion === 'success'))
 
-watch([channel, stableReleases], () => {
-  if (channel.value === 'stable' && stableReleases.value.length && !selectedTag.value) {
-    selectedTag.value = stableReleases.value[0].tag_name
+watch(stableReleases, (list) => {
+  if (list.length && !selectedTag.value) {
+    selectedTag.value = list[0].tag_name
+  }
+}, { immediate: true })
+
+watch(devBuilds, (list) => {
+  if (list.length && !selectedDevId.value) {
+    selectedDevId.value = String(list[0].id)
   }
 }, { immediate: true })
 
@@ -70,79 +89,79 @@ const selectedRelease = computed(() =>
   stableReleases.value.find((release) => release.tag_name === selectedTag.value),
 )
 
-const jarAsset = computed(() => {
-  const assets = channel.value === 'stable'
-    ? selectedRelease.value?.assets ?? []
-    : []
+const selectedDevRun = computed(() =>
+  devBuilds.value.find((run) => String(run.id) === selectedDevId.value) ?? devBuilds.value[0],
+)
 
-  return assets.find((asset) =>
-    asset.name.includes('paperclip') || asset.name.endsWith('.jar'),
-  )
+const jarAsset = computed(() => {
+  const assets = showDev.value ? [] : selectedRelease.value?.assets ?? []
+  return assets.find((asset) => asset.name.includes('paperclip') || asset.name.endsWith('.jar'))
+})
+
+const displayVersion = computed(() => {
+  if (showDev.value) return DEFAULT_MC_VERSION
+  if (selectedRelease.value) return selectedRelease.value.tag_name.replace(/^v/, '')
+  return DEFAULT_MC_VERSION
+})
+
+const buildLabel = computed(() => {
+  if (showDev.value && selectedDevRun.value) {
+    return `CI #${selectedDevRun.value.run_number}`
+  }
+  if (jarAsset.value) {
+    const match = jarAsset.value.name.match(/(\d+\.\d+\.\d+)/)
+    if (match) return `Build ${match[1]}`
+  }
+  if (selectedRelease.value) return selectedRelease.value.tag_name
+  return 'No release yet'
 })
 
 const downloadUrl = computed(() => {
-  if (channel.value === 'stable') {
-    return jarAsset.value?.browser_download_url ?? ''
+  if (showDev.value) {
+    return selectedDevRun.value ? `${selectedDevRun.value.html_url}#artifacts` : ''
   }
-
-  const run = devBuilds.value.find((item) => String(item.id) === selectedTag.value)
-    ?? devBuilds.value[0]
-  if (!run) return ''
-  return `${run.html_url}#artifacts`
-})
-
-const downloadLabel = computed(() => {
-  if (channel.value === 'stable') {
-    return jarAsset.value
-      ? `Download ${jarAsset.value.name}`
-      : 'No release jar available'
-  }
-
-  return devBuilds.value.length
-    ? 'Open latest dev build artifacts'
-    : 'No dev builds available yet'
-})
-
-const versionOptions = computed(() => {
-  if (channel.value === 'stable') {
-    return stableReleases.value.map((release) => ({
-      value: release.tag_name,
-      label: `${release.tag_name}${release.name ? ` — ${release.name}` : ''}`,
-    }))
-  }
-
-  return devBuilds.value.map((run) => ({
-    value: String(run.id),
-    label: `main @ ${new Date(run.created_at).toLocaleString()} (${run.id})`,
-  }))
+  return jarAsset.value?.browser_download_url ?? ''
 })
 
 const canDownload = computed(() => Boolean(downloadUrl.value))
 
-const helperText = computed(() => {
-  if (channel.value === 'stable') {
-    if (!stableReleases.value.length) {
-      return 'No GitHub releases yet. Use Dev builds from CI until the first release is published.'
-    }
-    return 'Stable builds are published as GitHub Release assets.'
+const versionMenuItems = computed(() => {
+  if (showDev.value) {
+    return devBuilds.value.map((run) => ({
+      id: String(run.id),
+      label: `main · CI #${run.run_number}`,
+      sub: new Date(run.created_at).toLocaleDateString(),
+    }))
   }
-
-  if (!devBuilds.value.length) {
-    return 'Dev builds come from successful CI runs on main. Trigger a build on GitHub Actions if none exist yet.'
-  }
-
-  return 'Dev builds are uploaded as the papyrus-server artifact on the latest successful workflow run.'
+  return stableReleases.value.map((release) => ({
+    id: release.tag_name,
+    label: release.tag_name.replace(/^v/, ''),
+    sub: release.name || new Date(release.published_at).toLocaleDateString(),
+  }))
 })
 
-watch(channel, (next) => {
-  if (next === 'stable' && stableReleases.value.length) {
-    selectedTag.value = stableReleases.value[0].tag_name
-  } else if (next === 'dev' && devBuilds.value.length) {
-    selectedTag.value = String(devBuilds.value[0].id)
-  } else {
-    selectedTag.value = ''
-  }
+const selectedMenuId = computed({
+  get: () => (showDev.value ? selectedDevId.value : selectedTag.value),
+  set: (value: string) => {
+    if (showDev.value) selectedDevId.value = value
+    else selectedTag.value = value
+  },
 })
+
+function toggleMenu(event: Event) {
+  event.stopPropagation()
+  menuOpen.value = !menuOpen.value
+}
+
+function selectVersion(id: string) {
+  selectedMenuId.value = id
+  menuOpen.value = false
+}
+
+function toggleDev() {
+  showDev.value = !showDev.value
+  menuOpen.value = false
+}
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`
@@ -152,149 +171,312 @@ function formatBytes(bytes: number) {
 </script>
 
 <template>
-  <div class="download-picker">
-    <div v-if="loading" class="download-status">Loading releases…</div>
-    <div v-else-if="error" class="download-status download-error">{{ error }}</div>
+  <section class="dl-hero">
+    <div v-if="loading" class="dl-status">Loading releases…</div>
+    <div v-else-if="error" class="dl-status dl-error">{{ error }}</div>
 
     <template v-else>
-      <p class="download-lead">{{ helperText }}</p>
-
-      <div class="download-controls">
-        <label class="download-field">
-          <span>Channel</span>
-          <select v-model="channel">
-            <option value="stable">Stable (GitHub Releases)</option>
-            <option value="dev">Dev (CI / main)</option>
-          </select>
-        </label>
-
-        <label v-if="versionOptions.length" class="download-field">
-          <span>{{ channel === 'stable' ? 'Version' : 'Build' }}</span>
-          <select v-model="selectedTag">
-            <option v-for="option in versionOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-        </label>
+      <div class="dl-eyebrow">
+        <span class="dl-eyebrow-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+        </span>
+        Downloads
       </div>
 
-      <div class="download-actions">
+      <h1 class="dl-title">
+        Get Papyrus <span class="dl-version">{{ displayVersion }}</span>
+      </h1>
+
+      <p class="dl-lead">
+        Download Papyrus, our Paper-compatible Minecraft server software with configurable vanilla parity and performance tuning.
+      </p>
+
+      <div class="dl-split" :class="{ open: menuOpen, disabled: !canDownload && !showDev }">
         <a
-          class="download-button"
-          :class="{ disabled: !canDownload }"
+          class="dl-split-main"
           :href="canDownload ? downloadUrl : undefined"
           :target="canDownload ? '_blank' : undefined"
           :rel="canDownload ? 'noopener noreferrer' : undefined"
+          :tabindex="canDownload ? 0 : -1"
         >
-          {{ downloadLabel }}
+          <span class="dl-split-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+              <polyline points="9 15 12 18 15 15" />
+            </svg>
+          </span>
+          <span class="dl-split-text">
+            <span class="dl-split-name">Papyrus {{ displayVersion }}</span>
+            <span class="dl-split-build">{{ buildLabel }}</span>
+          </span>
         </a>
 
-        <a
-          class="download-secondary"
-          href="https://github.com/codingsushi79/Papyrus/actions/workflows/build.yml"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          class="dl-split-toggle"
+          :disabled="!versionMenuItems.length"
+          :aria-expanded="menuOpen"
+          aria-label="Choose version"
+          @click="toggleMenu"
         >
-          View all CI builds
-        </a>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <div v-if="menuOpen && versionMenuItems.length" class="dl-menu" @click.stop>
+          <button
+            v-for="item in versionMenuItems"
+            :key="item.id"
+            type="button"
+            class="dl-menu-item"
+            :class="{ active: item.id === selectedMenuId }"
+            @click="selectVersion(item.id)"
+          >
+            <span class="dl-menu-label">{{ item.label }}</span>
+            <span class="dl-menu-sub">{{ item.sub }}</span>
+          </button>
+        </div>
       </div>
 
-      <p v-if="channel === 'stable' && jarAsset" class="download-meta">
-        {{ jarAsset.name }} · {{ formatBytes(jarAsset.size) }}
+      <button type="button" class="dl-dev-toggle" :class="{ active: showDev }" @click="toggleDev">
+        {{ showDev ? 'Show stable releases' : 'Toggle dev builds from CI' }}
+      </button>
+
+      <p v-if="!showDev && !stableReleases.length" class="dl-hint">
+        No GitHub releases yet — enable dev builds or download from
+        <a href="https://github.com/codingsushi79/Papyrus/actions/workflows/build.yml" target="_blank" rel="noopener noreferrer">CI artifacts</a>.
       </p>
 
-      <p v-else-if="channel === 'dev' && devBuilds.length" class="download-meta">
-        Download the <code>papyrus-server</code> artifact from the workflow run page.
+      <p v-else-if="showDev" class="dl-hint">
+        Dev builds are uploaded as the <code>papyrus-server</code> artifact. Extract <code>papyrus-paperclip-*.jar</code> from the zip.
+      </p>
+
+      <p v-else-if="jarAsset" class="dl-hint">
+        {{ jarAsset.name }} · {{ formatBytes(jarAsset.size) }}
       </p>
     </template>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.download-picker {
-  margin: 1.5rem 0 2rem;
-  padding: 1.25rem;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
-  background: var(--vp-c-bg-soft);
+.dl-hero {
+  margin: 0 0 2.5rem;
+  padding: 0;
 }
 
-.download-lead {
-  margin: 0 0 1rem;
-  color: var(--vp-c-text-2);
-}
-
-.download-controls {
-  display: grid;
-  gap: 0.875rem;
-  margin-bottom: 1rem;
-}
-
-@media (min-width: 640px) {
-  .download-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.download-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  font-size: 0.875rem;
-  color: var(--vp-c-text-2);
-}
-
-.download-field select {
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  font: inherit;
-}
-
-.download-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.download-button {
+.dl-eyebrow {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.7rem 1.1rem;
-  border-radius: 999px;
-  background: var(--vp-c-brand-1);
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.download-button:hover {
-  background: var(--vp-c-brand-2);
-}
-
-.download-button.disabled {
-  pointer-events: none;
-  opacity: 0.55;
-}
-
-.download-secondary {
-  color: var(--vp-c-brand-1);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--vp-c-text-2);
+  font-size: 0.9375rem;
   font-weight: 500;
 }
 
-.download-meta,
-.download-status {
+.dl-eyebrow-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+.dl-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--vp-c-text-1);
+}
+
+.dl-version {
+  color: var(--vp-c-brand-1);
+}
+
+.dl-lead {
+  margin: 0 0 1.75rem;
+  max-width: 36rem;
+  color: var(--vp-c-text-2);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.dl-split {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  border-radius: 0.75rem;
+  background: var(--vp-c-brand-1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.dl-split.disabled .dl-split-main {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dl-split-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0.75rem 0 0 0.75rem;
+  transition: background-color 0.15s;
+}
+
+.dl-split-main:hover {
+  background: color-mix(in srgb, #fff 8%, var(--vp-c-brand-1));
+}
+
+.dl-split-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.dl-split-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.dl-split-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dl-split-build {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0.88;
+}
+
+.dl-split-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid color-mix(in srgb, #fff 22%, transparent);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.dl-split-toggle:hover:not(:disabled) {
+  background: color-mix(in srgb, #fff 10%, var(--vp-c-brand-1));
+}
+
+.dl-split-toggle:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dl-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 20;
+  min-width: min(100%, 18rem);
+  max-width: 20rem;
+  max-height: 16rem;
+  overflow: auto;
+  padding: 0.375rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 0.75rem;
+  background: var(--vp-c-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.dl-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.dl-menu-item:hover,
+.dl-menu-item.active {
+  background: var(--vp-c-bg-soft);
+}
+
+.dl-menu-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.dl-menu-sub {
+  font-size: 0.8125rem;
+  color: var(--vp-c-text-3);
+}
+
+.dl-dev-toggle {
+  display: inline-flex;
+  margin-top: 0.875rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 45%, var(--vp-c-divider));
+  border-radius: 0.625rem;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+}
+
+.dl-dev-toggle:hover,
+.dl-dev-toggle.active {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+.dl-hint {
   margin: 0.875rem 0 0;
   color: var(--vp-c-text-3);
   font-size: 0.875rem;
+  line-height: 1.55;
 }
 
-.download-error {
+.dl-hint a {
+  color: var(--vp-c-brand-1);
+}
+
+.dl-status {
+  color: var(--vp-c-text-2);
+  font-size: 0.9375rem;
+}
+
+.dl-error {
   color: var(--vp-c-danger-1, #f66f81);
 }
 </style>

@@ -1,6 +1,7 @@
-# Download
-
-Get the latest Papyrus server jar. **Stable** builds come from [GitHub Releases](https://github.com/codingsushi79/Papyrus/releases). **Dev** builds come from successful CI runs on `main`.
+---
+title: Download
+pageClass: download-page
+---
 
 <DownloadPicker />
 

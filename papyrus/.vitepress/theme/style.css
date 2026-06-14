@@ -649,3 +649,12 @@
   object-fit: contain;
   background: transparent !important;
 }
+
+/* Download page — hero is in DownloadPicker */
+.download-page .vp-doc > h1:first-child {
+  display: none;
+}
+
+.download-page .vp-doc {
+  padding-top: 1.5rem;
+}
