@@ -19,7 +19,6 @@ type WorkflowRun = {
 
 const REPO = 'codingsushi79/Papyrus'
 const WORKFLOW_FILE = 'build.yml'
-const DEFAULT_PAPYRUS_VERSION = '1.0.0'
 const DEFAULT_MC_VERSION = '26.1.2'
 const RELEASE_JAR_PREFIX = 'Papyrus-'
 
@@ -103,21 +102,33 @@ const jarAsset = computed(() => {
   )
 })
 
+function mcVersionFromJar(name?: string): string | undefined {
+  if (!name) return undefined
+  const prefixed = name.match(/^Papyrus-(.+)\.jar$/i)
+  if (prefixed) return prefixed[1]
+  const generic = name.match(/(\d+\.\d+(?:\.\d+)?)/)
+  return generic?.[1]
+}
+
+function jarAssetForRelease(release: Release) {
+  return (
+    release.assets.find((asset) => asset.name.startsWith(RELEASE_JAR_PREFIX))
+    ?? release.assets.find((asset) => asset.name.endsWith('.jar'))
+  )
+}
+
 const displayVersion = computed(() => {
   if (showDev.value) return DEFAULT_MC_VERSION
-  if (selectedRelease.value) return selectedRelease.value.tag_name.replace(/^v/, '')
-  return DEFAULT_PAPYRUS_VERSION
+  return mcVersionFromJar(jarAsset.value?.name) ?? DEFAULT_MC_VERSION
 })
 
 const buildLabel = computed(() => {
   if (showDev.value && selectedDevRun.value) {
     return `CI #${selectedDevRun.value.run_number}`
   }
-  if (jarAsset.value) {
-    const match = jarAsset.value.name.match(/(\d+\.\d+\.\d+)/)
-    if (match) return `Build ${match[1]}`
+  if (selectedRelease.value) {
+    return selectedRelease.value.tag_name
   }
-  if (selectedRelease.value) return selectedRelease.value.tag_name
   return 'No release yet'
 })
 
@@ -138,11 +149,15 @@ const versionMenuItems = computed(() => {
       sub: new Date(run.created_at).toLocaleDateString(),
     }))
   }
-  return stableReleases.value.map((release) => ({
-    id: release.tag_name,
-    label: release.tag_name.replace(/^v/, ''),
-    sub: release.name || new Date(release.published_at).toLocaleDateString(),
-  }))
+  return stableReleases.value.map((release) => {
+    const jar = jarAssetForRelease(release)
+    const mc = mcVersionFromJar(jar?.name)
+    return {
+      id: release.tag_name,
+      label: mc ?? release.tag_name.replace(/^v/, ''),
+      sub: release.tag_name,
+    }
+  })
 })
 
 const selectedMenuId = computed({
