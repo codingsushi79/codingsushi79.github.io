@@ -4,7 +4,7 @@ const docsBase = '/papyrus/'
 
 export default defineConfig({
   title: 'Papyrus',
-  description: 'Paper-compatible Minecraft server software by SushiMC',
+  description: 'Work in progress — Paper-compatible Minecraft server software by SushiMC',
   lang: 'en-US',
   base: docsBase,
   outDir: '../website-papyrus',

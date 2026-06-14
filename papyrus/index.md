@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Papyrus
   text: Documentation
-  tagline: Paper-compatible Minecraft server software with vanilla parity and performance tuning
+  tagline: Work in progress — Paper-compatible Minecraft server software with vanilla parity and performance tuning
   actions:
     - theme: brand
       text: Download
@@ -30,7 +30,7 @@ features:
 
 ## Overview
 
-Papyrus is a Minecraft server software fork of [Paper](https://github.com/PaperMC/Paper) by [SushiMC](https://github.com/codingsushi79). It keeps full plugin compatibility while making Paper's performance trade-offs explicit and configurable.
+Papyrus is a **work in progress** Minecraft server software fork of [Paper](https://github.com/PaperMC/Paper) by [SushiMC](https://github.com/codingsushi79). It keeps full plugin compatibility while making Paper's performance trade-offs explicit and configurable. APIs, defaults, and releases may change without notice.
 
 ## Get Started
 

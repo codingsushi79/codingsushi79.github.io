@@ -663,3 +663,34 @@
   display: block;
   width: 100%;
 }
+
+/* Site-wide WIP banner */
+.wip-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-text-1);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.wip-banner strong {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+.wip-banner span {
+  color: var(--vp-c-text-2);
+}
+
+@media (max-width: 640px) {
+  .wip-banner {
+    font-size: 0.75rem;
+  }
+}

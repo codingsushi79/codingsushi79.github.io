@@ -1,5 +1,9 @@
 # Introduction
 
+::: warning Work in progress
+Papyrus is under active development. Expect breaking changes, incomplete features, and limited production support. Use dev/CI builds and releases at your own risk.
+:::
+
 Papyrus is a Minecraft server software fork of [Paper](https://github.com/PaperMC/Paper) by [SushiMC](https://github.com/codingsushi79). It keeps full compatibility with the Paper plugin ecosystem while adding first-class options for vanilla parity and performance tuning.
 
 ## What Papyrus adds

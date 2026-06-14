@@ -1,5 +1,8 @@
 # FAQ
 
+**Is Papyrus production-ready?**  
+No. Papyrus is a work in progress. Expect breaking changes, incomplete features, and limited support. Use releases and CI builds for testing and early adoption at your own risk.
+
 **Is Papyrus compatible with Paper plugins?**  
 Yes. Same API package (`io.papermc.paper`), same Maven artifact (`io.papermc.paper:paper-api`), same config file names, same `paper-plugin.yml` format. Gradle modules are named `:paper-api` / `:paper-server` but live in `papyrus-*` directories. Use `ServerBuildInfo.BRAND_PAPYRUS_ID` only if you need Papyrus-specific behavior.
 

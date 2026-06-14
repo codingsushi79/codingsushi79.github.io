@@ -3,6 +3,10 @@ title: Download
 pageClass: download-page
 ---
 
+::: warning Work in progress
+Papyrus is a WIP project. Builds are provided for testing — not recommended for production servers yet.
+:::
+
 <DownloadPicker />
 
 ## Manual download
