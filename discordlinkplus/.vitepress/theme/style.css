@@ -642,7 +642,10 @@
   border-color: var(--vp-c-brand-1);
 }
 
-/* Nav logo — no background box */
+/* Nav logo */
 .VPNavBarTitle .logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
   background: transparent !important;
 }
