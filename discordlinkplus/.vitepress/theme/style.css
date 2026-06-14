@@ -648,3 +648,30 @@
 .VPHomeHero .image .VPImage {
   background: transparent !important;
 }
+
+.VPHomeHero .image-bg {
+  display: none;
+}
+
+.VPHomeHero .image-container {
+  background: transparent;
+}
+
+.VPHomeHero .image-src {
+  max-width: 280px !important;
+  max-height: 280px !important;
+}
+
+@media (min-width: 640px) {
+  .VPHomeHero .image-src {
+    max-width: 340px !important;
+    max-height: 340px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHomeHero .image-src {
+    max-width: 400px !important;
+    max-height: 400px !important;
+  }
+}
