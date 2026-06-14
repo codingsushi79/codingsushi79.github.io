@@ -136,13 +136,6 @@
   border-bottom-color: transparent !important;
 }
 
-.VPNavBarTitle .logo {
-  height: 28px;
-  width: 28px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
 /* Search flex-grow leaves a dead zone that clips/shows as a vertical bar between
    the logo and nav items — keep search compact and clip navbar overflow. */
 .VPNavBar {
