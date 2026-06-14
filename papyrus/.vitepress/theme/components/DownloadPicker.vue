@@ -195,72 +195,74 @@ function formatBytes(bytes: number) {
         Download Papyrus, our Paper-compatible Minecraft server software with configurable vanilla parity and performance tuning.
       </p>
 
-      <div class="dl-split" :class="{ open: menuOpen, disabled: !canDownload && !showDev }">
-        <a
-          class="dl-split-main"
-          :href="canDownload ? downloadUrl : undefined"
-          :target="canDownload ? '_blank' : undefined"
-          :rel="canDownload ? 'noopener noreferrer' : undefined"
-          :tabindex="canDownload ? 0 : -1"
-        >
-          <span class="dl-split-icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="12" y1="18" x2="12" y2="12" />
-              <polyline points="9 15 12 18 15 15" />
-            </svg>
-          </span>
-          <span class="dl-split-text">
-            <span class="dl-split-name">Papyrus {{ displayVersion }}</span>
-            <span class="dl-split-build">{{ buildLabel }}</span>
-          </span>
-        </a>
+      <div class="dl-actions">
+        <div class="dl-split" :class="{ open: menuOpen, disabled: !canDownload && !showDev }">
+          <a
+            class="dl-split-main"
+            :href="canDownload ? downloadUrl : undefined"
+            :target="canDownload ? '_blank' : undefined"
+            :rel="canDownload ? 'noopener noreferrer' : undefined"
+            :tabindex="canDownload ? 0 : -1"
+          >
+            <span class="dl-split-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <polyline points="9 15 12 18 15 15" />
+              </svg>
+            </span>
+            <span class="dl-split-text">
+              <span class="dl-split-name">Papyrus {{ displayVersion }}</span>
+              <span class="dl-split-build">{{ buildLabel }}</span>
+            </span>
+          </a>
 
-        <button
-          type="button"
-          class="dl-split-toggle"
-          :disabled="!versionMenuItems.length"
-          :aria-expanded="menuOpen"
-          aria-label="Choose version"
-          @click="toggleMenu"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+          <button
+            type="button"
+            class="dl-split-toggle"
+            :disabled="!versionMenuItems.length"
+            :aria-expanded="menuOpen"
+            aria-label="Choose version"
+            @click="toggleMenu"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <div v-if="menuOpen && versionMenuItems.length" class="dl-menu" @click.stop>
+            <button
+              v-for="item in versionMenuItems"
+              :key="item.id"
+              type="button"
+              class="dl-menu-item"
+              :class="{ active: item.id === selectedMenuId }"
+              @click="selectVersion(item.id)"
+            >
+              <span class="dl-menu-label">{{ item.label }}</span>
+              <span class="dl-menu-sub">{{ item.sub }}</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="dl-dev-toggle" :class="{ active: showDev }" @click="toggleDev">
+          {{ showDev ? 'Show stable releases' : 'Toggle dev builds from CI' }}
         </button>
 
-        <div v-if="menuOpen && versionMenuItems.length" class="dl-menu" @click.stop>
-          <button
-            v-for="item in versionMenuItems"
-            :key="item.id"
-            type="button"
-            class="dl-menu-item"
-            :class="{ active: item.id === selectedMenuId }"
-            @click="selectVersion(item.id)"
-          >
-            <span class="dl-menu-label">{{ item.label }}</span>
-            <span class="dl-menu-sub">{{ item.sub }}</span>
-          </button>
-        </div>
+        <p v-if="!showDev && !stableReleases.length" class="dl-hint">
+          No GitHub releases yet — enable dev builds or download from
+          <a href="https://github.com/codingsushi79/Papyrus/actions/workflows/build.yml" target="_blank" rel="noopener noreferrer">CI artifacts</a>.
+        </p>
+
+        <p v-else-if="showDev" class="dl-hint">
+          Dev builds are uploaded as the <code>papyrus-server</code> artifact. Extract <code>papyrus-paperclip-*.jar</code> from the zip.
+        </p>
+
+        <p v-else-if="jarAsset" class="dl-hint">
+          {{ jarAsset.name }} · {{ formatBytes(jarAsset.size) }}
+        </p>
       </div>
-
-      <button type="button" class="dl-dev-toggle" :class="{ active: showDev }" @click="toggleDev">
-        {{ showDev ? 'Show stable releases' : 'Toggle dev builds from CI' }}
-      </button>
-
-      <p v-if="!showDev && !stableReleases.length" class="dl-hint">
-        No GitHub releases yet — enable dev builds or download from
-        <a href="https://github.com/codingsushi79/Papyrus/actions/workflows/build.yml" target="_blank" rel="noopener noreferrer">CI artifacts</a>.
-      </p>
-
-      <p v-else-if="showDev" class="dl-hint">
-        Dev builds are uploaded as the <code>papyrus-server</code> artifact. Extract <code>papyrus-paperclip-*.jar</code> from the zip.
-      </p>
-
-      <p v-else-if="jarAsset" class="dl-hint">
-        {{ jarAsset.name }} · {{ formatBytes(jarAsset.size) }}
-      </p>
     </template>
   </section>
 </template>
@@ -313,10 +315,18 @@ function formatBytes(bytes: number) {
   line-height: 1.65;
 }
 
+.dl-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.875rem;
+  max-width: 100%;
+}
+
 .dl-split {
   position: relative;
-  display: inline-flex;
-  max-width: 100%;
+  display: flex;
+  width: min(100%, 22rem);
   border-radius: 0.75rem;
   background: var(--vp-c-brand-1);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
@@ -328,10 +338,12 @@ function formatBytes(bytes: number) {
 }
 
 .dl-split-main {
-  display: inline-flex;
+  display: flex;
+  flex: 1;
   align-items: center;
   gap: 0.875rem;
-  padding: 0.875rem 1.25rem;
+  min-width: 0;
+  padding: 0.875rem 1rem 0.875rem 1.25rem;
   color: #fff;
   text-decoration: none;
   border-radius: 0.75rem 0 0 0.75rem;
@@ -369,9 +381,11 @@ function formatBytes(bytes: number) {
 }
 
 .dl-split-toggle {
-  display: inline-flex;
+  display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  align-self: stretch;
   width: 3rem;
   padding: 0;
   border: 0;
@@ -440,8 +454,8 @@ function formatBytes(bytes: number) {
 }
 
 .dl-dev-toggle {
-  display: inline-flex;
-  margin-top: 0.875rem;
+  display: flex;
+  align-items: center;
   padding: 0.625rem 1rem;
   border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 45%, var(--vp-c-divider));
   border-radius: 0.625rem;
@@ -449,6 +463,7 @@ function formatBytes(bytes: number) {
   color: var(--vp-c-text-1);
   font-size: 0.9375rem;
   font-weight: 500;
+  line-height: 1.4;
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s, color 0.15s;
 }
@@ -461,7 +476,8 @@ function formatBytes(bytes: number) {
 }
 
 .dl-hint {
-  margin: 0.875rem 0 0;
+  margin: 0;
+  max-width: 36rem;
   color: var(--vp-c-text-3);
   font-size: 0.875rem;
   line-height: 1.55;
