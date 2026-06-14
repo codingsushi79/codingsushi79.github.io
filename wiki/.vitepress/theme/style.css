@@ -641,3 +641,10 @@
 .VPDocFooter .pager-link:hover {
   border-color: var(--vp-c-brand-1);
 }
+
+/* ── Project logos (transparent PNG) ─────────────────────────── */
+.VPNavBarTitle .logo,
+.VPHomeHero .image img,
+.VPHomeHero .image .VPImage {
+  background: transparent !important;
+}
