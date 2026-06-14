@@ -1,6 +1,6 @@
 # SushiMC Documentation
 
-Static documentation portal at **https://docs.sushii.dev/** with project docs under subpaths (e.g. `/essentialsy/`, `/discordlinkplus/`).
+Static documentation portal at **https://docs.sushii.dev/** with project docs under subpaths (e.g. `/essentialsy/`, `/papyrus/`).
 
 ## Development
 
@@ -12,6 +12,7 @@ npm install
 |---------|-------------|
 | `npm run dev` | EssentialsY VitePress docs → http://localhost:5173/essentialsy/ |
 | `npm run dev:discordlinkplus` | DiscordLink+ VitePress docs → http://localhost:5173/discordlinkplus/ |
+| `npm run dev:papyrus` | Papyrus VitePress docs → http://localhost:5173/papyrus/ |
 | `npm run dev:home` | Landing page only → http://localhost:5174 |
 | `npm run build:site` | Build everything into `_site/` |
 | `npm run preview:site` | Build + serve full site → http://localhost:4173 |
@@ -23,10 +24,12 @@ docs-site/
 ├── home/                      # Main landing page (docs.sushii.dev/)
 ├── wiki/                      # EssentialsY VitePress docs → /essentialsy/
 ├── discordlinkplus/           # DiscordLink+ VitePress docs → /discordlinkplus/
+├── papyrus/                   # Papyrus VitePress docs → /papyrus/
 ├── scripts/
 │   └── assemble-site.mjs      # Combines home + wiki builds for deploy
 ├── website/                   # EssentialsY build output (gitignored)
 ├── website-discordlinkplus/   # DiscordLink+ build output (gitignored)
+├── website-papyrus/           # Papyrus build output (gitignored)
 ├── _site/                     # Full site output (gitignored)
 └── .github/workflows/         # GitHub Pages deploy
 ```
@@ -37,6 +40,7 @@ docs-site/
 |---------|------|------------|
 | EssentialsY | `/essentialsy/` | [codingsushi79/EssentialsY](https://github.com/codingsushi79/EssentialsY) |
 | DiscordLink+ | `/discordlinkplus/` | [codingsushi79/discordlinkplus](https://github.com/codingsushi79/discordlinkplus) |
+| Papyrus | `/papyrus/` | [codingsushi79/Papyrus](https://github.com/codingsushi79/Papyrus) |
 
 ## Adding another project
 

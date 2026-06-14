@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "vitepress dev wiki",
     "dev:discordlinkplus": "vitepress dev discordlinkplus",
+    "dev:papyrus": "vitepress dev papyrus",
     "dev:home": "npx --yes serve home -l 5174",
-    "build": "vitepress build wiki && vitepress build discordlinkplus",
+    "build": "vitepress build wiki && vitepress build discordlinkplus && vitepress build papyrus",
     "build:site": "npm run build && node scripts/assemble-site.mjs",
     "preview": "vitepress preview website",
     "preview:site": "npm run build:site && npx --yes serve _site -l 4173"

@@ -1,9 +1,11 @@
 website/
 website-discordlinkplus/
+website-papyrus/
 _site/
 node_modules/
 wiki/.vitepress/cache/
 discordlinkplus/.vitepress/cache/
+papyrus/.vitepress/cache/
 .env
 .env.local
 .env.*.local
