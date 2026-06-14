@@ -5,6 +5,9 @@ hero:
   name: DiscordLink+
   text: Documentation
   tagline: Discord chat bridge, account linking, and Simple Voice Chat group bridging
+  image:
+    src: /logo.png
+    alt: DiscordLink+
   actions:
     - theme: brand
       text: Get Started

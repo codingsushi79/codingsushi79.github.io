@@ -5,6 +5,9 @@ hero:
   name: EssentialsY
   text: Documentation
   tagline: Unified Essentials plugin — one JAR, split config, easy module toggles
+  image:
+    src: /logo.png
+    alt: EssentialsY
   actions:
     - theme: brand
       text: Get Started
