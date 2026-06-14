@@ -16,8 +16,8 @@ cd Papyrus
 
 ```bash
 mkdir papyrus-server && cd papyrus-server
-cp /path/to/papyrus-paperclip-*.jar .
-java -jar papyrus-paperclip-*.jar
+cp /path/to/Papyrus-26.1.2.jar .
+java -jar Papyrus-26.1.2.jar
 ```
 
 Accept the EULA in `eula.txt`, then start again. Papyrus generates configs on first boot:

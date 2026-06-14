@@ -658,3 +658,8 @@
 .download-page .vp-doc {
   padding-top: 1.5rem;
 }
+
+.download-page .vp-doc h1.dl-title {
+  display: block;
+  width: 100%;
+}

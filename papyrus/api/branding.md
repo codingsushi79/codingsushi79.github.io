@@ -9,7 +9,7 @@ Papyrus identifies itself as **Papyrus by SushiMC** at runtime while remaining A
 | Display name | Paper | Papyrus |
 | Brand ID | `papermc:paper` | `sushimc:papyrus` |
 | Maven group | `io.papermc.paper` | `io.papermc.paper` (unchanged) |
-| Jar name | `paperclip-*.jar` | `papyrus-paperclip-*.jar` |
+| Jar name | `paperclip-*.jar` | `Papyrus-*.jar` (releases) |
 
 Startup message:
 
@@ -47,5 +47,5 @@ Papyrus disables the PaperMC update checker by default (`update-checker.enabled:
 **Will my Paper plugin work?**  
 Yes — same API package, same Maven artifact, same config files, same `paper-plugin.yml` format.
 
-**Why is the jar named `papyrus-paperclip`?**  
-The bootstrap tool (`paperclip`) comes from upstream Paper. Papyrus renames the output jar; the server still identifies itself as Papyrus at runtime.
+**Why is the release jar named `Papyrus-26.1.2.jar`?**  
+GitHub releases ship a branded jar named after the Minecraft version (e.g. `Papyrus-26.1.2.jar`). CI artifacts and local Gradle builds still use the internal `papyrus-paperclip-*.jar` filename from upstream Paper's bootstrap tool.

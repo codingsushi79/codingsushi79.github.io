@@ -13,6 +13,8 @@ cd Papyrus
 
 Output: `papyrus-server/build/distributions/papyrus-paperclip-<version>.jar`
 
+GitHub [releases](/download) rename this to `Papyrus-<minecraft-version>.jar` (e.g. `Papyrus-26.1.2.jar`).
+
 ## Common Gradle tasks
 
 | Task | Purpose |

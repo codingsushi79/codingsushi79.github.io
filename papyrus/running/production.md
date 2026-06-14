@@ -5,8 +5,8 @@
 Papyrus includes a production start script with recommended G1GC flags:
 
 ```bash
-cp /path/to/papyrus-paperclip-*.jar ./papyrus-paperclip.jar
-JAR=papyrus-paperclip.jar ./scripts/start.sh
+cp /path/to/Papyrus-26.1.2.jar ./Papyrus-26.1.2.jar
+JAR=Papyrus-26.1.2.jar ./scripts/start.sh
 ```
 
 Copy `scripts/start.sh` from the repo into your server directory, or use the path above from a clone.
@@ -14,7 +14,7 @@ Copy `scripts/start.sh` from the repo into your server directory, or use the pat
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `JAVA` | `java` | Path to Java binary |
-| `JAR` | `papyrus-paperclip.jar` | Server jar filename |
+| `JAR` | `Papyrus-26.1.2.jar` | Server jar filename |
 
 Edit `-Xms8G -Xmx8G` in the script to match your host. **Always set `-Xms` equal to `-Xmx`** to avoid heap resize pauses during gameplay.
 
@@ -27,7 +27,7 @@ java -Xms8G -Xmx8G \
   -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 \
   -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 \
   -XX:InitiatingHeapOccupancyPercent=15 -XX:MaxTenuringThreshold=1 \
-  -jar papyrus-paperclip.jar nogui
+  -jar Papyrus-26.1.2.jar nogui
 ```
 
 Paper's [Aikar flags](https://docs.papermc.io/paper/aikars-flags) documentation remains a good reference for tuning beyond these defaults.

@@ -12,8 +12,8 @@ Set `performance.entity-random-source: VANILLA` in `config/paper-global.yml` and
 **How do I get vanilla redstone behavior?**  
 Set `misc.redstone-implementation: VANILLA` in your world config. This is already the default.
 
-**Why is the jar named `papyrus-paperclip`?**  
-The bootstrap tool (`paperclip`) comes from upstream Paper. Papyrus renames the output jar; the server still identifies itself as Papyrus at runtime.
+**Why is the release jar named `Papyrus-26.1.2.jar`?**  
+GitHub releases ship a branded jar named after the Minecraft version (e.g. `Papyrus-26.1.2.jar`). CI artifacts and local Gradle builds still use the internal `papyrus-paperclip-*.jar` filename from upstream Paper's bootstrap tool.
 
 **Where do I report bugs?**  
 Open an issue at [github.com/codingsushi79/Papyrus/issues](https://github.com/codingsushi79/Papyrus/issues). Specify whether the bug exists in upstream Paper or is Papyrus-specific.

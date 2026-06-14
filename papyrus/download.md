@@ -9,7 +9,7 @@ pageClass: download-page
 
 ### Stable releases
 
-When a release is published, download `papyrus-paperclip-*.jar` from the [Releases](https://github.com/codingsushi79/Papyrus/releases) page.
+When a release is published, download `Papyrus-26.1.2.jar` (or `Papyrus-*.jar` for other Minecraft versions) from the [Releases](https://github.com/codingsushi79/Papyrus/releases) page.
 
 ### Dev builds (CI)
 

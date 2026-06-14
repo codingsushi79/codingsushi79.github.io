@@ -19,7 +19,9 @@ type WorkflowRun = {
 
 const REPO = 'codingsushi79/Papyrus'
 const WORKFLOW_FILE = 'build.yml'
+const DEFAULT_PAPYRUS_VERSION = '1.0.0'
 const DEFAULT_MC_VERSION = '26.1.2'
+const RELEASE_JAR_PREFIX = 'Papyrus-'
 
 const releases = ref<Release[]>([])
 const devRuns = ref<WorkflowRun[]>([])
@@ -95,13 +97,16 @@ const selectedDevRun = computed(() =>
 
 const jarAsset = computed(() => {
   const assets = showDev.value ? [] : selectedRelease.value?.assets ?? []
-  return assets.find((asset) => asset.name.includes('paperclip') || asset.name.endsWith('.jar'))
+  return (
+    assets.find((asset) => asset.name.startsWith(RELEASE_JAR_PREFIX))
+    ?? assets.find((asset) => asset.name.endsWith('.jar'))
+  )
 })
 
 const displayVersion = computed(() => {
   if (showDev.value) return DEFAULT_MC_VERSION
   if (selectedRelease.value) return selectedRelease.value.tag_name.replace(/^v/, '')
-  return DEFAULT_MC_VERSION
+  return DEFAULT_PAPYRUS_VERSION
 })
 
 const buildLabel = computed(() => {
@@ -269,15 +274,18 @@ function formatBytes(bytes: number) {
 
 <style scoped>
 .dl-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin: 0 0 2.5rem;
   padding: 0;
 }
 
 .dl-eyebrow {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
   color: var(--vp-c-text-2);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -295,6 +303,8 @@ function formatBytes(bytes: number) {
 }
 
 .dl-title {
+  display: block;
+  width: 100%;
   margin: 0 0 0.75rem;
   font-size: clamp(2rem, 5vw, 2.75rem);
   font-weight: 700;
