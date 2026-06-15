@@ -11,7 +11,7 @@ pageClass: download-page
 
 | Platform | File |
 |----------|------|
-| macOS | `.dmg` from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
+| macOS | `.pkg` installer from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
 | Windows | `.exe` installer from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
 
 The launcher includes Microsoft sign-in, Fabric installation, mod profiles, and the bundled `papyrus-shield` integrity mod.

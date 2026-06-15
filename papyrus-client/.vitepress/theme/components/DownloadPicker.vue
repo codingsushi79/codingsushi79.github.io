@@ -109,9 +109,15 @@ const selectedDevRun = computed(() =>
 
 function findLauncherAsset(assets: Release['assets'], platform: 'mac' | 'win') {
   if (platform === 'mac') {
-    return assets.find((asset) => asset.name.endsWith('.dmg'))
+    return (
+      assets.find((asset) => asset.name.endsWith('.pkg'))
+      ?? assets.find((asset) => asset.name.endsWith('.dmg'))
+    )
   }
-  return assets.find((asset) => asset.name.endsWith('.exe'))
+  return (
+    assets.find((asset) => asset.name.endsWith('.exe') && asset.name.includes('Setup'))
+    ?? assets.find((asset) => asset.name.endsWith('.exe'))
+  )
 }
 
 function findModAsset(assets: Release['assets'], mc: string) {
