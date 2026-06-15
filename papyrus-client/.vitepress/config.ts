@@ -1,13 +1,13 @@
 import { defineConfig } from 'vitepress'
 
-const docsBase = '/papyrus/'
+const docsBase = '/papyrus-client/'
 
 export default defineConfig({
-  title: 'Papyrus',
-  description: 'Work in progress — Paper-compatible Minecraft server software by SushiMC',
+  title: 'Papyrus Client',
+  description: 'Fabric-only Minecraft launcher with client integrity for Papyrus servers',
   lang: 'en-US',
   base: docsBase,
-  outDir: '../website-papyrus',
+  outDir: '../website-papyrus-client',
   cleanUrls: true,
   lastUpdated: true,
   appearance: 'dark',
@@ -33,17 +33,16 @@ export default defineConfig({
 
   themeConfig: {
     logo: '/logo.png',
-    siteTitle: 'Papyrus',
+    siteTitle: 'Papyrus Client',
 
     nav: [
       { text: 'Docs', link: '/getting-started/introduction' },
       { text: 'Download', link: '/download' },
-      { text: 'Papyrus Client', link: 'https://docs.sushii.dev/papyrus-client/' },
-      { text: 'Configuration', link: '/configuration/overview' },
-      { text: 'API', link: '/api/overview' },
+      { text: 'Server Setup', link: '/server/configuration' },
+      { text: 'Papyrus Server', link: 'https://docs.sushii.dev/papyrus/' },
       {
         text: 'GitHub',
-        link: 'https://github.com/codingsushi79/Papyrus',
+        link: 'https://github.com/codingsushi79/Papyrus-Client',
       },
     ],
 
@@ -59,40 +58,19 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Running',
+        text: 'Launcher',
         collapsed: false,
         items: [
-          { text: 'Production', link: '/running/production' },
+          { text: 'Microsoft Sign-In', link: '/launcher/microsoft-auth' },
+          { text: 'Profiles & Mods', link: '/launcher/profiles-mods' },
         ],
       },
       {
-        text: 'Configuration',
+        text: 'Server',
         collapsed: false,
         items: [
-          { text: 'Overview', link: '/configuration/overview' },
-          { text: 'Papyrus Options', link: '/configuration/papyrus-options' },
-          { text: 'Performance', link: '/configuration/performance' },
-          { text: 'Vanilla Preset', link: '/configuration/vanilla-preset' },
-          { text: 'Redstone Presets', link: '/configuration/redstone-presets' },
-        ],
-      },
-      {
-        text: 'API',
-        collapsed: false,
-        items: [
-          { text: 'Overview', link: '/api/overview' },
-          { text: 'Plugin Development', link: '/api/plugin-development' },
-          { text: 'Packages', link: '/api/packages' },
-          { text: 'Branding & Compatibility', link: '/api/branding' },
-        ],
-      },
-      {
-        text: 'Development',
-        collapsed: true,
-        items: [
-          { text: 'Building', link: '/development/building' },
-          { text: 'Project Structure', link: '/development/project-structure' },
-          { text: 'Contributing', link: '/development/contributing' },
+          { text: 'Configuration', link: '/server/configuration' },
+          { text: 'Banned Mods', link: '/server/banned-mods' },
         ],
       },
       {
@@ -105,7 +83,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/codingsushi79/Papyrus' },
+      { icon: 'github', link: 'https://github.com/codingsushi79/Papyrus-Client' },
     ],
 
     search: {
@@ -118,14 +96,8 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'GPL/MIT · Papyrus by SushiMC',
+      message: 'MIT · Papyrus Client by SushiMC',
       copyright: 'SushiMC',
     },
-
-    docFooter: {
-      prev: 'Previous',
-      next: 'Next',
-    },
   },
-
 })

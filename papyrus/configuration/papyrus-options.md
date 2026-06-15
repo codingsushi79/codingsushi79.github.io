@@ -78,3 +78,37 @@ chunk-system:
 ```
 
 Papyrus auto-scales I/O threads to `min(4, max(1, cpu_cores / 4))` when set to `-1` or `0`. Paper previously pinned this to a single I/O thread.
+
+## Integrated anticheat engine
+
+See [Papyrus README](https://github.com/codingsushi79/Papyrus) for server-side checks (x-ray heuristics, fast place/break, reach, movement, timer).
+
+**File:** `config/paper-global.yml` → `anticheat.engine`
+
+## Client integrity (Papyrus Client)
+
+Requires players to use [Papyrus Client](https://docs.sushii.dev/papyrus-client/) or the `papyrus-shield` Fabric mod. The client reports all installed mods to the server.
+
+**File:** `config/paper-global.yml`
+
+```yaml
+anticheat:
+  client-integrity:
+    enabled: true
+    require-papyrus-client: true
+    require-shield-mod: true
+    download-url: https://docs.sushii.dev/papyrus-client/download
+    banned-mod-ids:
+      - meteor-client
+      - wurst
+```
+
+| Option | Description |
+|--------|-------------|
+| `enabled` | Kick players without a valid integrity report |
+| `download-url` | Shown on disconnect |
+| `banned-mod-ids` | Substrings matched against reported mod ids |
+
+Bypass permission: `papyrus.client.bypass`
+
+Full docs: [Papyrus Client server setup](https://docs.sushii.dev/papyrus-client/server/configuration)

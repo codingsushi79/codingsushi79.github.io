@@ -10,9 +10,11 @@ npm install
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | EssentialsY VitePress docs → http://localhost:5173/essentialsy/ |
-| `npm run dev:discordlinkplus` | DiscordLink+ VitePress docs → http://localhost:5173/discordlinkplus/ |
-| `npm run dev:papyrus` | Papyrus VitePress docs → http://localhost:5173/papyrus/ |
+| `npm run dev` | Full docs portal → http://localhost:5173/ |
+| `npm run dev:essentialsy` | EssentialsY VitePress docs only → http://localhost:5173/essentialsy/ |
+| `npm run dev:discordlinkplus` | DiscordLink+ VitePress docs only → http://localhost:5173/discordlinkplus/ |
+| `npm run dev:papyrus` | Papyrus VitePress docs only → http://localhost:5173/papyrus/ |
+| `npm run dev:papyrus-client` | Papyrus Client VitePress docs only → http://localhost:5173/papyrus-client/ |
 | `npm run dev:home` | Landing page only → http://localhost:5174 |
 | `npm run build:site` | Build everything into `_site/` |
 | `npm run preview:site` | Build + serve full site → http://localhost:4173 |

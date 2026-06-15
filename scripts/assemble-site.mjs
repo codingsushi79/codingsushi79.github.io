@@ -14,6 +14,7 @@ const PROJECTS = [
   { name: 'essentialsy', outDir: path.join(ROOT, 'website') },
   { name: 'discordlinkplus', outDir: path.join(ROOT, 'website-discordlinkplus') },
   { name: 'papyrus', outDir: path.join(ROOT, 'website-papyrus') },
+  { name: 'papyrus-client', outDir: path.join(ROOT, 'website-papyrus-client') },
 ]
 const SITE_DIR = path.join(ROOT, '_site')
 const CNAME = 'docs.sushii.dev'

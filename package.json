@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev wiki",
+    "dev": "node scripts/dev-site.mjs",
+    "dev:essentialsy": "vitepress dev wiki",
     "dev:discordlinkplus": "vitepress dev discordlinkplus",
     "dev:papyrus": "vitepress dev papyrus",
     "dev:home": "npx --yes serve home -l 5174",
-    "build": "vitepress build wiki && vitepress build discordlinkplus && vitepress build papyrus",
+    "build": "vitepress build wiki && vitepress build discordlinkplus && vitepress build papyrus && vitepress build papyrus-client",
+    "dev:papyrus-client": "vitepress dev papyrus-client",
     "build:site": "npm run build && node scripts/assemble-site.mjs",
     "preview": "vitepress preview website",
     "preview:site": "npm run build:site && npx --yes serve _site -l 4173"
