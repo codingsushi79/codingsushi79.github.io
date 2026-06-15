@@ -13,16 +13,24 @@ Papyrus is a WIP project. Builds are provided for testing — not recommended fo
 
 ### Stable releases
 
-Download `Papyrus-26.1.2.jar` from the [Releases](https://github.com/codingsushi79/Papyrus/releases) page.
+Each release ships one jar per supported Minecraft version:
 
-Release tags use semantic fork versioning (`v1.0.0`, `v1.0.1`, …). The jar filename always reflects the Minecraft version (`Papyrus-<mcVersion>.jar`), not the release tag.
+| Minecraft | File |
+|-----------|------|
+| **26.1.2** | `Papyrus-26.1.2.jar` |
+| **1.21.11** | `Papyrus-1.21.11.jar` |
+| **1.21.10** | `Papyrus-1.21.10.jar` |
+| **1.21.8** | `Papyrus-1.21.8.jar` |
+| **1.21.4** | `Papyrus-1.21.4.jar` |
+| **1.21.1** | `Papyrus-1.21.1.jar` |
+
+Release tags use semantic fork versioning (`v1.0.0`, `v1.0.1`, …). Jar filenames always reflect the Minecraft version, not the release tag.
 
 ### Dev builds (CI)
 
 1. Open [Build Papyrus](https://github.com/codingsushi79/Papyrus/actions/workflows/build.yml) on GitHub Actions
 2. Click the latest successful run on `main`
-3. Download the **`papyrus-server`** artifact
-4. Extract the `papyrus-paperclip-*.jar` from the zip
+3. Download the **`papyrus-server-<mc>`** artifact for your Minecraft version (e.g. `papyrus-server-26.1.2`)
 
 ### Build from source
 

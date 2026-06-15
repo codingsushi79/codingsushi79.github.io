@@ -17,14 +17,20 @@ type WorkflowRun = {
   run_number: number
 }
 
+type ResolvedDownload = {
+  asset: Release['assets'][number]
+  release: Release
+}
+
 const REPO = 'codingsushi79/Papyrus'
 const WORKFLOW_FILE = 'build.yml'
-const DEFAULT_MC_VERSION = '26.1.2'
 const RELEASE_JAR_PREFIX = 'Papyrus-'
+const DEFAULT_MC = '26.1.2'
+const MC_VERSIONS = ['26.1.2', '1.21.11', '1.21.10', '1.21.8', '1.21.4', '1.21.1']
 
 const releases = ref<Release[]>([])
 const devRuns = ref<WorkflowRun[]>([])
-const selectedTag = ref('')
+const selectedMc = ref(DEFAULT_MC)
 const selectedDevId = ref('')
 const showDev = ref(false)
 const menuOpen = ref(false)
@@ -37,7 +43,7 @@ async function loadData() {
 
   try {
     const [releaseRes, runsRes] = await Promise.all([
-      fetch(`https://api.github.com/repos/${REPO}/releases?per_page=20`),
+      fetch(`https://api.github.com/repos/${REPO}/releases?per_page=30`),
       fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs?branch=main&status=success&per_page=15`),
     ])
 
@@ -74,74 +80,62 @@ const stableReleases = computed(() =>
 
 const devBuilds = computed(() => devRuns.value.filter((run) => run.conclusion === 'success'))
 
-watch(stableReleases, (list) => {
-  if (list.length && !selectedTag.value) {
-    selectedTag.value = list[0].tag_name
-  }
-}, { immediate: true })
-
 watch(devBuilds, (list) => {
   if (list.length && !selectedDevId.value) {
     selectedDevId.value = String(list[0].id)
   }
 }, { immediate: true })
 
-const selectedRelease = computed(() =>
-  stableReleases.value.find((release) => release.tag_name === selectedTag.value),
-)
-
 const selectedDevRun = computed(() =>
   devBuilds.value.find((run) => String(run.id) === selectedDevId.value) ?? devBuilds.value[0],
 )
 
-const jarAsset = computed(() => {
-  const assets = showDev.value ? [] : selectedRelease.value?.assets ?? []
-  return (
-    assets.find((asset) => asset.name.startsWith(RELEASE_JAR_PREFIX))
-    ?? assets.find((asset) => asset.name.endsWith('.jar'))
-  )
-})
-
-function mcVersionFromJar(name?: string): string | undefined {
-  if (!name) return undefined
-  const prefixed = name.match(/^Papyrus-(.+)\.jar$/i)
-  if (prefixed) return prefixed[1]
-  const generic = name.match(/(\d+\.\d+(?:\.\d+)?)/)
-  return generic?.[1]
+function jarAssetForMc(assets: Release['assets'], mc: string) {
+  return assets.find((asset) => asset.name === `${RELEASE_JAR_PREFIX}${mc}.jar`)
 }
 
-function jarAssetForRelease(release: Release) {
-  return (
-    release.assets.find((asset) => asset.name.startsWith(RELEASE_JAR_PREFIX))
-    ?? release.assets.find((asset) => asset.name.endsWith('.jar'))
-  )
+function findLatestForMc(mc: string): ResolvedDownload | undefined {
+  for (const release of stableReleases.value) {
+    const asset = jarAssetForMc(release.assets, mc)
+    if (asset) return { asset, release }
+  }
+  return undefined
 }
 
-const displayVersion = computed(() => {
-  if (showDev.value) return DEFAULT_MC_VERSION
-  return mcVersionFromJar(jarAsset.value?.name) ?? DEFAULT_MC_VERSION
+const resolvedDownload = computed((): ResolvedDownload | undefined => {
+  if (showDev.value) return undefined
+  return findLatestForMc(selectedMc.value)
 })
+
+const displayVersion = computed(() => (showDev.value ? DEFAULT_MC : selectedMc.value))
 
 const buildLabel = computed(() => {
   if (showDev.value && selectedDevRun.value) {
     return `CI #${selectedDevRun.value.run_number}`
   }
-  if (selectedRelease.value) {
-    return selectedRelease.value.tag_name
-  }
-  return 'No release yet'
+  const resolved = resolvedDownload.value
+  if (!resolved) return 'No release yet'
+  return resolved.release.tag_name
 })
 
 const downloadUrl = computed(() => {
   if (showDev.value) {
     return selectedDevRun.value ? `${selectedDevRun.value.html_url}#artifacts` : ''
   }
-  return jarAsset.value?.browser_download_url ?? ''
+  return resolvedDownload.value?.asset.browser_download_url ?? ''
 })
 
 const canDownload = computed(() => Boolean(downloadUrl.value))
 
-const versionMenuItems = computed(() => {
+const activeAsset = computed(() => resolvedDownload.value?.asset)
+
+type MenuItem = {
+  id: string
+  label: string
+  sub: string
+}
+
+const versionMenuItems = computed((): MenuItem[] => {
   if (showDev.value) {
     return devBuilds.value.map((run) => ({
       id: String(run.id),
@@ -149,22 +143,30 @@ const versionMenuItems = computed(() => {
       sub: new Date(run.created_at).toLocaleDateString(),
     }))
   }
-  return stableReleases.value.map((release) => {
-    const jar = jarAssetForRelease(release)
-    const mc = mcVersionFromJar(jar?.name)
-    return {
-      id: release.tag_name,
-      label: mc ?? release.tag_name.replace(/^v/, ''),
-      sub: release.tag_name,
-    }
+
+  return MC_VERSIONS.flatMap((mc) => {
+    const found = findLatestForMc(mc)
+    if (!found) return []
+    return [{
+      id: mc,
+      label: mc,
+      sub: found.release.tag_name,
+    }]
   })
 })
 
+watch(versionMenuItems, (items) => {
+  if (!items.length || showDev.value) return
+  if (!items.some((item) => item.id === selectedMc.value)) {
+    selectedMc.value = items[0]?.id ?? DEFAULT_MC
+  }
+}, { immediate: true })
+
 const selectedMenuId = computed({
-  get: () => (showDev.value ? selectedDevId.value : selectedTag.value),
+  get: () => (showDev.value ? selectedDevId.value : selectedMc.value),
   set: (value: string) => {
     if (showDev.value) selectedDevId.value = value
-    else selectedTag.value = value
+    else selectedMc.value = value
   },
 })
 
@@ -276,11 +278,15 @@ function formatBytes(bytes: number) {
         </p>
 
         <p v-else-if="showDev" class="dl-hint">
-          Dev builds are uploaded as the <code>papyrus-server</code> artifact. Extract <code>papyrus-paperclip-*.jar</code> from the zip.
+          Dev artifacts: <code>papyrus-server-&lt;mc&gt;</code> for each supported Minecraft version.
         </p>
 
-        <p v-else-if="jarAsset" class="dl-hint">
-          {{ jarAsset.name }} · {{ formatBytes(jarAsset.size) }}
+        <p v-else-if="activeAsset" class="dl-hint">
+          {{ activeAsset.name }} · {{ formatBytes(activeAsset.size) }}
+        </p>
+
+        <p v-else-if="!showDev && stableReleases.length" class="dl-hint">
+          Selected Minecraft version is not attached to a release yet — pick another version from the menu.
         </p>
       </div>
     </template>
