@@ -16,6 +16,8 @@ pageClass: download-page
 
 The launcher includes Microsoft sign-in, Fabric installation, mod profiles, and the bundled `papyrus-shield` integrity mod.
 
+See [Installation](/getting-started/installation) for macOS `.pkg` setup and the `xattr` steps if Gatekeeper blocks the app.
+
 ### Mod only
 
 Use these if you already have Fabric and another launcher but need integrity for a Papyrus server:
@@ -46,5 +48,6 @@ Place the jar in your instance `mods/` folder alongside other Fabric mods.
 
 ## Next steps
 
-- [Quick Start](/getting-started/quick-start) — Sign in and create a profile
+- [Installation](/getting-started/installation) — macOS `.pkg` setup and `xattr` guide
+- [Quick Start](/getting-started/quick-start) — Sign in and create an instance
 - [Server Configuration](/server/configuration) — Enable client integrity on Papyrus

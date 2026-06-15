@@ -2,7 +2,7 @@
 
 ## 1. Download and install
 
-Download the launcher for your platform from [Download](/download).
+Download the launcher for your platform from [Download](/download), then follow the [Installation guide](/getting-started/installation) (macOS users: read the `xattr` section if the `.pkg` or app is blocked).
 
 ## 2. Sign in with Microsoft
 

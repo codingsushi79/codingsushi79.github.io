@@ -53,6 +53,7 @@ export default defineConfig({
         items: [
           { text: 'Introduction', link: '/getting-started/introduction' },
           { text: 'Requirements', link: '/getting-started/requirements' },
+          { text: 'Installation', link: '/getting-started/installation' },
           { text: 'Quick Start', link: '/getting-started/quick-start' },
           { text: 'Download', link: '/download' },
         ],
