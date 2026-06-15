@@ -30,7 +30,7 @@ features:
 
 ## Overview
 
-**Papyrus Client** is a cross-platform launcher (macOS and Windows) for playing on [Papyrus](/papyrus/) servers with enforced client integrity. Download the full launcher or only the `papyrus-shield` mod jar for your Minecraft version.
+**Papyrus Client** is a cross-platform launcher (macOS and Windows) for playing on [Papyrus](https://docs.sushii.dev/papyrus/) servers with enforced client integrity. Download the full launcher or only the `papyrus-shield` mod jar for your Minecraft version.
 
 ## Get Started
 
