@@ -17,19 +17,21 @@ type WorkflowRun = {
   run_number: number
 }
 
-type DownloadKind = 'launcher-mac' | 'launcher-win' | 'mod'
+type ResolvedDownload = {
+  asset: Release['assets'][number]
+  release: Release
+}
 
 const REPO = 'codingsushi79/Papyrus-Client'
 const WORKFLOW_FILE = 'build.yml'
 const MOD_PREFIX = 'papyrus-shield'
+const DEFAULT_MC = '26.1.2'
 const MC_VERSIONS = ['26.1.2', '1.21.11', '1.21.10', '1.21.8', '1.21.4', '1.21.1']
 
 const releases = ref<Release[]>([])
 const devRuns = ref<WorkflowRun[]>([])
-const selectedTag = ref('')
+const selectedId = ref('')
 const selectedDevId = ref('')
-const selectedKind = ref<DownloadKind>('launcher-mac')
-const selectedMc = ref('26.1.2')
 const showDev = ref(false)
 const menuOpen = ref(false)
 const loading = ref(true)
@@ -43,13 +45,17 @@ function detectPlatform(): 'mac' | 'win' {
   return 'mac'
 }
 
+function defaultStableId(): string {
+  return detectPlatform() === 'win' ? 'launcher-win' : 'launcher-mac'
+}
+
 async function loadData() {
   loading.value = true
   error.value = ''
 
   try {
     const [releaseRes, runsRes] = await Promise.all([
-      fetch(`https://api.github.com/repos/${REPO}/releases?per_page=20`),
+      fetch(`https://api.github.com/repos/${REPO}/releases?per_page=30`),
       fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs?branch=main&status=success&per_page=15`),
     ])
 
@@ -68,7 +74,7 @@ async function loadData() {
 }
 
 onMounted(() => {
-  selectedKind.value = detectPlatform() === 'win' ? 'launcher-win' : 'launcher-mac'
+  selectedId.value = defaultStableId()
   loadData()
   document.addEventListener('click', closeMenuOnOutside)
 })
@@ -87,21 +93,11 @@ const stableReleases = computed(() =>
 
 const devBuilds = computed(() => devRuns.value.filter((run) => run.conclusion === 'success'))
 
-watch(stableReleases, (list) => {
-  if (list.length && !selectedTag.value) {
-    selectedTag.value = list[0].tag_name
-  }
-}, { immediate: true })
-
 watch(devBuilds, (list) => {
   if (list.length && !selectedDevId.value) {
     selectedDevId.value = String(list[0].id)
   }
 }, { immediate: true })
-
-const selectedRelease = computed(() =>
-  stableReleases.value.find((release) => release.tag_name === selectedTag.value),
-)
 
 const selectedDevRun = computed(() =>
   devBuilds.value.find((run) => String(run.id) === selectedDevId.value) ?? devBuilds.value[0],
@@ -112,6 +108,7 @@ function findLauncherAsset(assets: Release['assets'], platform: 'mac' | 'win') {
     return (
       assets.find((asset) => asset.name.endsWith('.pkg'))
       ?? assets.find((asset) => asset.name.endsWith('.dmg'))
+      ?? assets.find((asset) => asset.name.includes('-mac.zip'))
     )
   }
   return (
@@ -121,28 +118,57 @@ function findLauncherAsset(assets: Release['assets'], platform: 'mac' | 'win') {
 }
 
 function findModAsset(assets: Release['assets'], mc: string) {
-  return (
-    assets.find((asset) => asset.name.startsWith(`${MOD_PREFIX}-${mc}-`) && asset.name.endsWith('.jar'))
-    ?? assets.find((asset) => asset.name.startsWith(`${MOD_PREFIX}-${mc}`) && asset.name.endsWith('.jar'))
+  return assets.find(
+    (asset) => asset.name.startsWith(`${MOD_PREFIX}-${mc}-`) && asset.name.endsWith('.jar'),
   )
 }
 
-const activeAsset = computed(() => {
+function findLatestLauncher(platform: 'mac' | 'win'): ResolvedDownload | undefined {
+  for (const release of stableReleases.value) {
+    const asset = findLauncherAsset(release.assets, platform)
+    if (asset) return { asset, release }
+  }
+  return undefined
+}
+
+function findLatestMod(mc: string): ResolvedDownload | undefined {
+  for (const release of stableReleases.value) {
+    const asset = findModAsset(release.assets, mc)
+    if (asset) return { asset, release }
+  }
+  return undefined
+}
+
+function modVersionFromJar(name?: string): string | undefined {
+  if (!name) return undefined
+  const match = name.match(/^papyrus-shield-.+-(.+)\.jar$/i)
+  return match?.[1]
+}
+
+const isLauncher = computed(() => selectedId.value.startsWith('launcher-'))
+
+const resolvedDownload = computed((): ResolvedDownload | undefined => {
   if (showDev.value) return undefined
-  const assets = selectedRelease.value?.assets ?? []
-  if (selectedKind.value === 'launcher-mac') return findLauncherAsset(assets, 'mac')
-  if (selectedKind.value === 'launcher-win') return findLauncherAsset(assets, 'win')
-  return findModAsset(assets, selectedMc.value)
+  if (selectedId.value === 'launcher-mac') return findLatestLauncher('mac')
+  if (selectedId.value === 'launcher-win') return findLatestLauncher('win')
+  if (selectedId.value.startsWith('mod:')) {
+    return findLatestMod(selectedId.value.slice(4))
+  }
+  return undefined
 })
 
-const isLauncher = computed(() => selectedKind.value.startsWith('launcher-'))
-
 const displayVersion = computed(() => {
-  if (showDev.value) return isLauncher.value ? (selectedKind.value === 'launcher-mac' ? 'macOS' : 'Windows') : selectedMc.value
-  if (isLauncher.value) {
-    return selectedKind.value === 'launcher-mac' ? 'macOS' : 'Windows'
+  if (showDev.value) {
+    if (selectedId.value.startsWith('mod:')) return selectedId.value.slice(4)
+    return selectedId.value === 'launcher-win' ? 'Windows' : 'macOS'
   }
-  return selectedMc.value
+  if (isLauncher.value) {
+    return selectedId.value === 'launcher-win' ? 'Windows' : 'macOS'
+  }
+  if (selectedId.value.startsWith('mod:')) {
+    return selectedId.value.slice(4)
+  }
+  return DEFAULT_MC
 })
 
 const productName = computed(() => (isLauncher.value ? 'Papyrus Client' : 'papyrus-shield'))
@@ -151,26 +177,25 @@ const buildLabel = computed(() => {
   if (showDev.value && selectedDevRun.value) {
     return `CI #${selectedDevRun.value.run_number}`
   }
-  if (selectedRelease.value) {
-    return selectedRelease.value.tag_name
-  }
-  return 'No release yet'
+  const resolved = resolvedDownload.value
+  if (!resolved) return 'No release yet'
+  if (isLauncher.value) return resolved.release.tag_name
+  return modVersionFromJar(resolved.asset.name) ?? resolved.release.tag_name
 })
 
 const downloadUrl = computed(() => {
   if (showDev.value) {
     return selectedDevRun.value ? `${selectedDevRun.value.html_url}#artifacts` : ''
   }
-  return activeAsset.value?.browser_download_url ?? ''
+  return resolvedDownload.value?.asset.browser_download_url ?? ''
 })
 
 const canDownload = computed(() => Boolean(downloadUrl.value))
 
+const activeAsset = computed(() => resolvedDownload.value?.asset)
+
 type MenuItem = {
   id: string
-  kind: DownloadKind
-  tag: string
-  mc?: string
   label: string
   sub: string
 }
@@ -179,80 +204,59 @@ const versionMenuItems = computed((): MenuItem[] => {
   if (showDev.value) {
     return devBuilds.value.map((run) => ({
       id: String(run.id),
-      kind: selectedKind.value,
-      tag: '',
       label: `main · CI #${run.run_number}`,
       sub: new Date(run.created_at).toLocaleDateString(),
     }))
   }
 
   const items: MenuItem[] = []
-  for (const release of stableReleases.value) {
-    if (findLauncherAsset(release.assets, 'mac')) {
+
+  const mac = findLatestLauncher('mac')
+  if (mac) {
+    items.push({
+      id: 'launcher-mac',
+      label: 'Papyrus Client · macOS',
+      sub: mac.release.tag_name,
+    })
+  }
+
+  const win = findLatestLauncher('win')
+  if (win) {
+    items.push({
+      id: 'launcher-win',
+      label: 'Papyrus Client · Windows',
+      sub: win.release.tag_name,
+    })
+  }
+
+  for (const mc of MC_VERSIONS) {
+    const mod = findLatestMod(mc)
+    if (mod) {
       items.push({
-        id: `${release.tag_name}|launcher-mac`,
-        kind: 'launcher-mac',
-        tag: release.tag_name,
-        label: 'Launcher · macOS',
-        sub: release.tag_name,
+        id: `mod:${mc}`,
+        label: mc,
+        sub: modVersionFromJar(mod.asset.name) ?? mod.release.tag_name,
       })
-    }
-    if (findLauncherAsset(release.assets, 'win')) {
-      items.push({
-        id: `${release.tag_name}|launcher-win`,
-        kind: 'launcher-win',
-        tag: release.tag_name,
-        label: 'Launcher · Windows',
-        sub: release.tag_name,
-      })
-    }
-    for (const mc of MC_VERSIONS) {
-      if (findModAsset(release.assets, mc)) {
-        items.push({
-          id: `${release.tag_name}|mod|${mc}`,
-          kind: 'mod',
-          tag: release.tag_name,
-          mc,
-          label: `Mod · ${mc}`,
-          sub: release.tag_name,
-        })
-      }
     }
   }
-  return items
-})
 
-const selectedMenuId = computed({
-  get: () => {
-    if (showDev.value) return selectedDevId.value
-    if (selectedKind.value === 'mod') {
-      return `${selectedTag.value}|mod|${selectedMc.value}`
-    }
-    return `${selectedTag.value}|${selectedKind.value}`
-  },
-  set: (value: string) => {
-    if (showDev.value) {
-      selectedDevId.value = value
-      return
-    }
-    const [tag, kind, mc] = value.split('|')
-    selectedTag.value = tag
-    if (kind === 'mod' && mc) {
-      selectedKind.value = 'mod'
-      selectedMc.value = mc
-    } else if (kind === 'launcher-mac' || kind === 'launcher-win') {
-      selectedKind.value = kind
-    }
-  },
+  return items
 })
 
 watch(versionMenuItems, (items) => {
   if (!items.length || showDev.value) return
-  const current = items.find((item) => item.id === selectedMenuId.value)
-  if (!current) {
-    selectedMenuId.value = items[0].id
+  if (!items.some((item) => item.id === selectedId.value)) {
+    selectedId.value = items.find((item) => item.id.startsWith('launcher-'))?.id ?? items[0].id
   }
 }, { immediate: true })
+
+const selectedMenuId = computed({
+  get: () => (showDev.value ? selectedDevId.value : selectedId.value),
+  set: (value: string) => {
+    if (showDev.value) selectedDevId.value = value
+    else selectedId.value = value
+  },
+})
 
 function toggleMenu(event: Event) {
   event.stopPropagation()
@@ -267,6 +271,9 @@ function selectVersion(id: string) {
 function toggleDev() {
   showDev.value = !showDev.value
   menuOpen.value = false
+  if (!showDev.value && !selectedId.value) {
+    selectedId.value = defaultStableId()
+  }
 }
 
 function formatBytes(bytes: number) {
@@ -300,6 +307,7 @@ function formatBytes(bytes: number) {
       <p class="dl-lead">
         Fabric-only launcher with Microsoft sign-in, mod profiles, and bundled client integrity for
         <a href="https://docs.sushii.dev/papyrus/">Papyrus servers</a>.
+        Mod builds are published for every supported Minecraft version.
       </p>
 
       <div class="dl-actions">
@@ -330,7 +338,7 @@ function formatBytes(bytes: number) {
             class="dl-split-toggle"
             :disabled="!versionMenuItems.length"
             :aria-expanded="menuOpen"
-            aria-label="Choose download"
+            aria-label="Choose version"
             @click="toggleMenu"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -364,7 +372,7 @@ function formatBytes(bytes: number) {
 
         <p v-else-if="showDev" class="dl-hint">
           Dev artifacts: <code>papyrus-client-macos-latest</code>, <code>papyrus-client-windows-latest</code>, and
-          <code>papyrus-shield-&lt;mc&gt;</code> mod jars.
+          <code>papyrus-shield-&lt;mc&gt;</code> for each supported Minecraft version.
         </p>
 
         <p v-else-if="activeAsset" class="dl-hint">
@@ -372,7 +380,7 @@ function formatBytes(bytes: number) {
         </p>
 
         <p v-else-if="!showDev && stableReleases.length" class="dl-hint">
-          Selected file is not attached to this release — pick another option from the menu.
+          Selected file is not available yet — pick another Minecraft version from the menu.
         </p>
       </div>
     </template>
