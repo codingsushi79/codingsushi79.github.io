@@ -2,6 +2,8 @@
 
 Download the launcher from [Download](/download), then follow the steps for your platform.
 
+Papyrus Client is a fork of [Prism Launcher](https://prismlauncher.org/) with Fabric-only instances, a Minecraft version whitelist, and bundled `papyrus-shield`.
+
 ## macOS
 
 Papyrus Client ships as a **`.pkg` installer** for Apple Silicon Macs (`arm64`).
@@ -24,7 +26,7 @@ Then double-click the `.pkg` again.
 
 1. Open the `.pkg` file
 2. Follow the installer prompts
-3. Papyrus Client is installed to **Applications**
+3. Papyrus Client is installed to **Applications** as `PapyrusClient.app`
 
 ### 4. Allow the app to run (unsigned build)
 
@@ -42,31 +44,27 @@ Papyrus Client is not notarized yet. On first launch, macOS may say the app cann
 If the app still will not launch, run:
 
 ```bash
-xattr -cr "/Applications/Papyrus Client.app"
+xattr -cr "/Applications/PapyrusClient.app"
 ```
 
 Then open Papyrus Client from Applications or Spotlight.
-
-### 5. Updates
-
-The launcher checks for updates automatically. macOS updates are delivered as `.zip` files; the `.pkg` is only needed for the first install.
 
 ---
 
 ## Windows
 
-Papyrus Client ships as an **NSIS `.exe` installer** for 64-bit Windows.
+Papyrus Client ships as an **NSIS installer** named `PapyrusClient-Setup.exe` for 64-bit Windows.
 
 ### 1. Download the installer
 
-Get `Papyrus Client Setup <version>.exe` from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases).
+Get `PapyrusClient-Setup.exe` from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases).
 
 ### 2. Run the installer
 
-1. Double-click the `.exe`
+1. Double-click `PapyrusClient-Setup.exe`
 2. If **SmartScreen** appears (“Windows protected your PC”), click **More info**, then **Run anyway**
-3. Choose an install folder if prompted
-4. Finish setup and launch from the desktop or Start menu shortcut
+3. Choose an install folder if prompted (default: `%LOCALAPPDATA%\Programs\PapyrusClient`)
+4. Finish setup and launch from the Start menu shortcut
 
 Papyrus Client is not code-signed yet, so SmartScreen may warn on the first install. This is expected for community builds.
 

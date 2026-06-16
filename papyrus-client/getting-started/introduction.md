@@ -1,6 +1,6 @@
 # Introduction
 
-Papyrus Client is a **Fabric-only** Minecraft launcher for macOS and Windows. It is the companion client for [Papyrus server software](https://docs.sushii.dev/papyrus/).
+Papyrus Client is a **Fabric-only** Minecraft launcher for macOS and Windows. It is a fork of [Prism Launcher](https://prismlauncher.org/) and the companion client for [Papyrus server software](https://docs.sushii.dev/papyrus/).
 
 ## Why Papyrus Client?
 
@@ -8,13 +8,13 @@ Vanilla Fabric mods can choose whether to identify themselves to servers. Papyru
 
 1. Collects **every** mod loaded by Fabric Loader (including mods that do not self-report)
 2. Sends a signed integrity report to Papyrus servers over the `papyrus:integrity` channel
-3. Runs invisibly in the launcher UI — you manage your own mods, integrity is always present
+3. Is installed into every new instance automatically — you manage your own mods on top
 
 Servers with `anticheat.client-integrity.enabled: true` reject players who do not send a valid report and show the [download page](/download).
 
 ## Fabric only
 
-Papyrus Client does **not** support Forge, NeoForge, or Quilt-only profiles. Every supported Minecraft version uses Fabric Loader.
+Papyrus Client does **not** support Forge, NeoForge, or Quilt. The new-instance dialog only offers **Fabric**, and other loader options are hidden.
 
 ## Supported versions
 
@@ -24,8 +24,8 @@ Pre-built **papyrus-shield** jars are published for:
 - **1.21.11**, **1.21.10**, **1.21.8**
 - 1.21.4, 1.21.1
 
-The launcher profile picker lists these first, then other Mojang release versions.
+When creating a new instance, **only these Minecraft versions** appear in the version list. Snapshots, betas, and unsupported releases are filtered out.
 
 ## Microsoft sign-in required
 
-You must sign in with Microsoft before launching. This matches official Minecraft authentication and prevents cracked clients from joining integrity-enabled servers.
+You must add a Microsoft account before launching. This matches official Minecraft authentication and prevents cracked clients from joining integrity-enabled servers.

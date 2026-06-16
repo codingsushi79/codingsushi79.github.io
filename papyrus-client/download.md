@@ -1,7 +1,4 @@
----
-title: Download
-pageClass: download-page
----
+# Download
 
 <DownloadPicker />
 
@@ -13,14 +10,14 @@ The picker above selects by **platform** (launcher) or **Minecraft version** (mo
 
 | Platform | File |
 |----------|------|
-| macOS | `.pkg` installer from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
-| Windows | `.exe` installer from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
+| macOS | `Papyrus Client-<version>-arm64.pkg` from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
+| Windows | `PapyrusClient-Setup.exe` from [GitHub Releases](https://github.com/codingsushi79/Papyrus-Client/releases) |
 
-The launcher includes Microsoft sign-in, Fabric installation, mod profiles, and the bundled `papyrus-shield` integrity mod.
+The launcher is a Prism Launcher fork with Microsoft sign-in, Fabric-only instances, supported-version whitelist, and bundled `papyrus-shield`.
 
 See [Installation](/getting-started/installation) for macOS `.pkg` setup and the `xattr` steps if Gatekeeper blocks the app.
 
-### Mod only
+### Mod only {#mod-only}
 
 Use these if you already have Fabric and another launcher but need integrity for a Papyrus server. One jar per supported Minecraft version:
 
@@ -39,7 +36,7 @@ Place the jar in your instance `mods/` folder alongside other Fabric mods.
 
 1. Open [Build Papyrus Client](https://github.com/codingsushi79/Papyrus-Client/actions/workflows/build.yml) on GitHub Actions
 2. Click the latest successful run on `main`
-3. Download **`papyrus-client-macos-latest`**, **`papyrus-client-windows-latest`**, or **`papyrus-shield-<mc>`** (one artifact per Minecraft version: 26.1.2, 1.21.11, 1.21.10, 1.21.8, 1.21.4, 1.21.1)
+3. Download **`papyrus-client-macos-latest`**, **`papyrus-client-windows-2022`**, or **`papyrus-shield-<mc>`** (one artifact per Minecraft version)
 
 ## Requirements
 

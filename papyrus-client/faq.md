@@ -6,7 +6,7 @@ No. Only servers with `anticheat.client-integrity.enabled: true` require the mod
 
 ## Can I use Prism Launcher instead?
 
-Yes, if you install the `papyrus-shield` mod jar for your version from [Download](/download). The full Papyrus Client launcher is recommended for automatic updates.
+Yes, if you install the `papyrus-shield` mod jar for your version from [Download](/download). Papyrus Client is a Prism Launcher fork with the same mod pre-installed on every new instance.
 
 ## Why is the integrity mod hidden?
 

@@ -6,21 +6,25 @@ Download the launcher for your platform from [Download](/download), then follow 
 
 ## 2. Sign in with Microsoft
 
-Open Papyrus Client and click **Sign in with Microsoft**. Complete the browser flow.
+Open Papyrus Client. On first launch, add your Microsoft account under **Accounts** (same flow as Prism Launcher). You need a valid Java Edition license before you can play.
 
-## 3. Create a profile
+## 3. Create an instance
 
-1. Enter a profile name
-2. Select a Minecraft version
-3. Click **Create**
+1. Click **Add Instance**
+2. Enter a name
+3. Pick a **Minecraft version** — only versions with a `papyrus-shield` build are listed (see [Introduction](/getting-started/introduction#supported-versions))
+4. **Fabric** is selected automatically; other mod loaders are not available
+5. Click **OK** to create the instance
+
+`papyrus-shield` is copied into the instance `mods/` folder automatically when the instance is created.
 
 ## 4. Add mods (optional)
 
-Copy Fabric `.jar` mods into the launcher mods folder (shown in the UI). User mods appear in the list; `papyrus-shield` is injected automatically and is not shown.
+Open the instance → **Mods** and install Fabric mods from Modrinth, or drop `.jar` files into the instance `mods/` folder. User mods appear in the list; `papyrus-shield` is bundled with the launcher and installed per instance.
 
 ## 5. Launch
 
-Select your profile and click **Launch Fabric**. The launcher installs Minecraft + Fabric, copies mods, and starts the game.
+Select your instance and click **Launch**. The launcher downloads Minecraft and Fabric, then starts the game.
 
 ## Join a Papyrus server
 

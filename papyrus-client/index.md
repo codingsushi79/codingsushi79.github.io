@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Papyrus Client
   text: Fabric Launcher
-  tagline: Microsoft sign-in, mod profiles, and bundled client integrity for Papyrus servers
+  tagline: Prism-based Fabric launcher with Microsoft sign-in and bundled client integrity for Papyrus servers
   actions:
     - theme: brand
       text: Download
@@ -24,13 +24,13 @@ features:
     title: Client Integrity
     details: Bundled papyrus-shield mod reports installed mods to Papyrus servers.
   - icon: 📦
-    title: Mod Profiles
-    details: Add Fabric mods like Prism or Feather — integrity still reports everything installed.
+    title: Prism-Based UI
+    details: Familiar instance management, Modrinth mod installs, and settings — forked from Prism Launcher 10.
 ---
 
 ## Overview
 
-**Papyrus Client** is a cross-platform launcher (macOS and Windows) for playing on [Papyrus](https://docs.sushii.dev/papyrus/) servers with enforced client integrity. Download the full launcher or only the `papyrus-shield` mod jar for your Minecraft version.
+**Papyrus Client** is a cross-platform launcher (macOS and Windows) forked from Prism Launcher for playing on [Papyrus](https://docs.sushii.dev/papyrus/) servers with enforced client integrity. Download the full launcher or only the `papyrus-shield` mod jar for your Minecraft version.
 
 ## Get Started
 

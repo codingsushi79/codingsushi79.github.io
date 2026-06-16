@@ -63,7 +63,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'Microsoft Sign-In', link: '/launcher/microsoft-auth' },
-          { text: 'Profiles & Mods', link: '/launcher/profiles-mods' },
+          { text: 'Instances & Mods', link: '/launcher/profiles-mods' },
         ],
       },
       {

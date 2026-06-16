@@ -108,11 +108,11 @@ function findLauncherAsset(assets: Release['assets'], platform: 'mac' | 'win') {
     return (
       assets.find((asset) => asset.name.endsWith('.pkg'))
       ?? assets.find((asset) => asset.name.endsWith('.dmg'))
-      ?? assets.find((asset) => asset.name.includes('-mac.zip'))
     )
   }
   return (
-    assets.find((asset) => asset.name.endsWith('.exe') && asset.name.includes('Setup'))
+    assets.find((asset) => asset.name === 'PapyrusClient-Setup.exe')
+    ?? assets.find((asset) => asset.name.endsWith('.exe') && asset.name.includes('Setup'))
     ?? assets.find((asset) => asset.name.endsWith('.exe'))
   )
 }
@@ -305,7 +305,7 @@ function formatBytes(bytes: number) {
       </h1>
 
       <p class="dl-lead">
-        Fabric-only launcher with Microsoft sign-in, mod profiles, and bundled client integrity for
+        Prism-based Fabric launcher with Microsoft sign-in, instance management, and bundled client integrity for
         <a href="https://docs.sushii.dev/papyrus/">Papyrus servers</a>.
         Mod builds are published for every supported Minecraft version.
       </p>
@@ -371,7 +371,7 @@ function formatBytes(bytes: number) {
         </p>
 
         <p v-else-if="showDev" class="dl-hint">
-          Dev artifacts: <code>papyrus-client-macos-latest</code>, <code>papyrus-client-windows-latest</code>, and
+          Dev artifacts: <code>papyrus-client-macos-latest</code>, <code>papyrus-client-windows-2022</code>, and
           <code>papyrus-shield-&lt;mc&gt;</code> for each supported Minecraft version.
         </p>
 

@@ -1,27 +1,36 @@
-# Profiles & Mods
+# Instances & Mods
 
-## Profiles
+Papyrus Client uses Prism Launcher’s instance model.
 
-Each profile stores:
+## Instances
+
+Each instance stores:
 
 - Display name
-- Minecraft version (Fabric)
-- List of user mod jars
+- Minecraft version (from the supported whitelist)
+- Fabric Loader
+- Mods, resource packs, and worlds under `.minecraft/`
 
-Profiles live in the launcher data directory under `instances/<profile-id>/`.
+Instances live in the launcher data directory (default: `~/Library/Application Support/PapyrusClient/instances/` on macOS, `%APPDATA%\PapyrusClient\instances\` on Windows).
 
 ## User mods
 
-Add `.jar` files to the launcher `mods/` folder. They appear in the UI and are copied into the instance on launch.
+Add Fabric `.jar` mods through the instance **Mods** page, or copy files into `<instance>/.minecraft/mods/`. Modrinth integration works like upstream Prism Launcher.
 
-## Hidden integrity mod
+## Bundled integrity mod
 
-`papyrus-shield` is **not shown** in the mod list. The launcher copies it from bundled resources every launch. This mod:
+`papyrus-shield` is **copied from the launcher install** into each new instance’s `mods/` folder. It:
 
 - Reports all Fabric-loaded mods to the server
 - Marks the client as `papyrus-client`
-- Cannot be removed from the launcher build (mod-only downloads are separate jars for advanced users)
+- Should not be removed if you play on integrity-enabled servers
+
+Mod-only downloads from [Download](/download) are for users who manage their own Fabric instances in another launcher.
 
 ## Fabric only
 
-Profiles always install **Fabric Loader**. Forge mods are not supported.
+New instances always use **Fabric Loader**. Forge and NeoForge are not available in Papyrus Client.
+
+## Deleting instances
+
+Right-click an instance → **Delete** to remove it from the launcher and delete its files on disk.
