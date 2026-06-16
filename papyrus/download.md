@@ -22,7 +22,6 @@ Each release ships one jar per supported Minecraft version:
 | **1.21.10** | `Papyrus-1.21.10.jar` |
 | **1.21.8** | `Papyrus-1.21.8.jar` |
 | **1.21.4** | `Papyrus-1.21.4.jar` |
-| **1.21.1** | `Papyrus-1.21.1.jar` |
 
 Release tags use semantic fork versioning (`v1.0.0`, `v1.0.1`, …). Jar filenames always reflect the Minecraft version, not the release tag.
 

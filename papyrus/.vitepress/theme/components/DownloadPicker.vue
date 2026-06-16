@@ -26,7 +26,7 @@ const REPO = 'codingsushi79/Papyrus'
 const WORKFLOW_FILE = 'build.yml'
 const RELEASE_JAR_PREFIX = 'Papyrus-'
 const DEFAULT_MC = '26.1.2'
-const MC_VERSIONS = ['26.1.2', '1.21.11', '1.21.10', '1.21.8', '1.21.4', '1.21.1']
+const MC_VERSIONS = ['26.1.2', '1.21.11', '1.21.10', '1.21.8', '1.21.4']
 
 const releases = ref<Release[]>([])
 const devRuns = ref<WorkflowRun[]>([])
